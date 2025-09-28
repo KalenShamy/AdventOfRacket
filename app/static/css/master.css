@@ -1,0 +1,78 @@
+:root {
+    font-family: "Irish Grover", cursive;
+    --golden: #E1A94A;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #181818;
+}
+
+nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    background-color: #3E5BA9;
+    width: calc(100vw - 20px);
+    height: 100px;
+    padding-right: 20px;
+}
+
+nav > div {
+    display: flex;
+    align-items: center;
+}
+
+nav > div a:hover {
+    text-decoration: underline;
+}
+
+nav > div > * {
+    margin-left: 32px;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    font-size: 24px;
+    line-height: 100px;
+    margin-top: 0;
+}
+
+nav #title {
+    display: flex;
+    font-size: 40px;
+}
+
+.content {
+    padding: 45px;
+    color: white;
+    min-height: calc(100vh - 100px);
+}
+
+.content * a {
+    color: inherit;
+    text-decoration: inherit;
+}
+
+.content * a:hover {
+    text-shadow: 0 0 5px #ffffff00;
+    text-decoration: underline;
+}
+
+p {
+    color: #DDD;
+    font-size: 26px;
+    margin-top: 0;
+}
+
+span.shiny {
+    color: white;
+    text-shadow: 0 0 5px #ffffffaa;
+}
+
+span.hide {
+    color: #5D5D5D;
+}

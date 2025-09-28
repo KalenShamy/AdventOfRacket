@@ -1,0 +1,42 @@
+{% extends 'layout.html' %}
+{% block title %}Home{% endblock %}
+{% block css %}index{% endblock %}
+{% block content %}
+<p>
+    Inspired by <span class="shiny"><a href="https://adventofcode.com/" target="_blank">AoC</a></span>,
+    <br>
+    Molded by the hell that is the <span class="shiny"><a href="https://racket-lang.org/" target="_blank">Racket</a></span> programming language.
+    <br>
+    And yes, you <span class="shiny">have</span> to use Racket.
+    <br>
+    <span class="hide">sorry!</span>
+</p>
+<div class="stars">
+    {% for star in stars %}
+        {% if star.open %}
+            <a href="/problems/{{ star.i }}" class="star open">
+        {% else %}
+            <a class="star closed">
+        {% endif %}
+            <svg id="star{{ star.i }}" xmlns="http://www.w3.org/2000/svg" width="100" height="100" 
+                    viewBox="0 0 100 100" role="img" aria-label="Five point star">
+                    {% if star.i == 25 %}
+                        <polygon points="
+                        50,10 59.405,37.056 88.042,37.639 65.217,54.944 73.511,82.361 
+                        50,66 26.489,82.361 34.783,54.944 11.958,37.639 40.595,37.056"
+                        fill="currentColor" stroke="var(--golden)" stroke-width="2"/>
+                    {% else %}
+                        <polygon points="
+                        50,10 59.405,37.056 88.042,37.639 65.217,54.944 73.511,82.361 
+                        50,66 26.489,82.361 34.783,54.944 11.958,37.639 40.595,37.056"
+                        fill="currentColor" stroke="white" stroke-width="2"/>
+                    {% endif %}
+                </svg>
+            <span class="day">{{ star.i }}</span>
+        </a>
+
+    {% endfor %}
+
+
+</div>
+{% endblock %}
