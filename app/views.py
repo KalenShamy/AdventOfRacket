@@ -20,18 +20,40 @@ def day_available(day):
     return day <= current_date.day
 
 def index(request):
+    if request.method != "GET":
+        return JsonResponse({"error": request.method + " not allowed here"}, status=400)
     stars = [{"i": i, "open": day_available(i)} for i in range(1,26)]
-    return render(request, "index.html", {
+    return render(request, "index.jekyll", {
         "stars": stars
+    })
+
+def leaderboard(request, day=None):
+    if request.method != "GET":
+        return JsonResponse({"error": request.method + " not allowed here"}, status=400)
+    
+    days = [{"i": i, "open": day_available(i)} for i in range(1,26)]
+    
+    if day != None and day_available(day):
+        leaderboard_two_stars = []  # TODO: Fetch real data
+        leaderboard_one_star = []  # TODO: Fetch real data
+        return render(request, "leaderboard_specific.jekyll", {
+            "days": days, "selected_day": day,
+            "leaderboard_two_stars": leaderboard_two_stars,
+            "leaderboard_one_star": leaderboard_one_star
+        })
+    
+    if day != None and not day_available(day):
+        return HttpResponseRedirect(reverse("leaderboard"))
+    
+    leaderboard_overall = []  # TODO: Fetch real data
+    return render(request, "leaderboard.jekyll", {
+        "days": days, "leaderboard_overall": leaderboard_overall
     })
 
 def problem(request, number=None):
     pass
 
 def submit(request, number):
-    pass
-
-def leaderboard(request):
     pass
 
 @login_required

@@ -1,6 +1,9 @@
 :root {
     font-family: "Irish Grover", cursive;
     --golden: #E1A94A;
+    --dark-grey: #5D5D5D;
+    --blue: #3E5BA9;
+    --red: #9F1D20;
 }
 
 body {
@@ -50,6 +53,7 @@ nav #title {
     padding: 45px;
     color: white;
     min-height: calc(100vh - 100px);
+    max-width: 1028px;
 }
 
 .content * a {
@@ -57,7 +61,7 @@ nav #title {
     text-decoration: inherit;
 }
 
-.content * a:hover {
+.content p a:hover {
     text-shadow: 0 0 5px #ffffff00;
     text-decoration: underline;
 }
@@ -74,5 +78,5 @@ span.shiny {
 }
 
 span.hide {
-    color: #5D5D5D;
+    color: var(--dark-grey);
 }

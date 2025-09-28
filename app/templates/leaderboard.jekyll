@@ -1,0 +1,36 @@
+{% extends 'layout.jekyll' %}
+{% block title %}Leaderboard{% endblock %}
+{% block css %}leaderboard{% endblock %}
+{% block content %}
+<p>
+    Per Day:
+    {% for day in days %}
+        {% if day.open %}
+            <a href="/leaderboard/{{ day.i }}" class="day open">{{ day.i }}</a> 
+        {% else %}
+            <a class="day closed">{{ day.i }} </a>
+        {% endif %}
+    {% endfor %}
+</p>
+
+<p>
+    Below is the Advent of Racket <span class="shiny">overall</span> leaderboard; these are the 20 users with the highest <span class="shiny">total score</span>. Getting a star first is worth 10 points, second is 9, and so on down to 1 point at 10th place.
+</p>
+
+<div class="leaderboard">
+    <ol>
+        {% for user in leaderboard_overall %}
+            <li>
+                <span class="score">{{ user.score }}</span>
+                {% if user.rank == 1 %}
+                    <a class="name first" href="{{ user.link }}" target="_blank">{{ user.username }}</a>
+                {% elif user.rank <= 5 %}
+                    <a class="name topfive" href="{{ user.link }}" target="_blank">{{ user.username }}</a>
+                {% else %}
+                    <a class="name" href="{{ user.link }}" target="_blank">{{ user.username }}</a>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ol>
+</div>
+{% endblock %}

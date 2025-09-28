@@ -1,0 +1,48 @@
+.day.open {
+    color: var(--blue);
+}
+.day.open:hover {
+    color: white;
+    text-shadow: 0 0 4px white;
+    text-decoration: underline;
+}
+
+.day.selected {
+    color: var(--red);
+}
+
+.day.closed {
+    color: var(--dark-grey);
+}
+.day.closed:hover .day.selected:hover {
+    text-decoration: none;
+}
+
+ol {
+    padding-left: 20px;
+    font-size: 24px;
+}
+
+li {
+    position: relative;
+    width: 100%;
+}
+
+li > a {
+    position: absolute;
+    left: 75px;
+}
+
+li > a.first {
+    color: var(--red);
+}
+
+li > a.topfive {
+    color: var(--blue);
+}
+
+li > a:hover {
+    color: white;
+    text-shadow: 0 0 4px white;
+    text-decoration: underline;
+}

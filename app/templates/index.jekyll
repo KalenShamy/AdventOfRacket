@@ -1,4 +1,4 @@
-{% extends 'layout.html' %}
+{% extends 'layout.jekyll' %}
 {% block title %}Home{% endblock %}
 {% block css %}index{% endblock %}
 {% block content %}

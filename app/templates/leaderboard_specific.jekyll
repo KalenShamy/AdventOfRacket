@@ -1,0 +1,60 @@
+{% extends 'layout.jekyll' %}
+{% block title %}Leaderboard{% endblock %}
+{% block css %}leaderboard{% endblock %}
+{% block content %}
+<p>
+    Per Day:
+    {% for day in days %}
+        {% if day.i == selected_day %}
+            <a class="day selected">{{ day.i }}</a>
+        {% elif day.open %}
+            <a href="/leaderboard/{{ day.i }}" class="day open">{{ day.i }}</a> 
+        {% else %}
+            <a class="day closed">{{ day.i }} </a>
+        {% endif %}
+    {% endfor %}
+</p>
+
+<p>
+    First ten users to get <span class="shiny">both stars</span> on Day {{ selected_day }}:
+</p>
+
+<div class="leaderboard">
+    <ol>
+        {% for user in leaderboard_two_stars %}
+            <li>
+                <span class="score">{{ user.score }}</span>
+                {% if user.rank == 1 %}
+                    <a class="name first" href="{{ user.link }}" target="_blank">{{ user.username }}</a>
+                {% elif user.rank <= 5 %}
+                    <a class="name topfive" href="{{ user.link }}" target="_blank">{{ user.username }}</a>
+                {% else %}
+                    <a class="name" href="{{ user.link }}" target="_blank">{{ user.username }}</a>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ol>
+</div>
+
+<p>
+    First ten users to get <span class="shiny">one star</span> on Day {{ selected_day }}:
+</p>
+
+<div class="leaderboard">
+    <ol>
+        {% for user in leaderboard_one_star %}
+            <li>
+                <span class="score">{{ user.score }}</span>
+                {% if user.rank == 1 %}
+                    <a class="name first" href="{{ user.link }}" target="_blank">{{ user.username }}</a>
+                {% elif user.rank <= 5 %}
+                    <a class="name topfive" href="{{ user.link }}" target="_blank">{{ user.username }}</a>
+                {% else %}
+                    <a class="name" href="{{ user.link }}" target="_blank">{{ user.username }}</a>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ol>
+</div>
+
+{% endblock %}
