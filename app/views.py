@@ -8,6 +8,7 @@ from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.core.paginator import Paginator
 
+import requests
 from datetime import date
 
 # Create your views here.
@@ -51,7 +52,32 @@ def leaderboard(request, day=None):
     })
 
 def problem(request, number=None):
-    pass
+    if request.method != "GET":
+        return JsonResponse({"error": request.method + " not allowed here"}, status=400)
+    
+    if number == None:
+        current_date = date.today()
+        if current_date.month != 12:
+            current_date = date(2025, 12, 1)
+        number = current_date.day
+    
+    if not day_available(number):
+        return HttpResponseRedirect(reverse("index"))
+    
+    # Fetch starter code for part 1
+    starter_code_part1 = ""
+    try:
+        response = requests.get(f"http://api.adventofracket.com/starter/{number}/1")
+        response.raise_for_status()  # Raise an exception for bad status codes (4xx or 5xx)
+        starter_code_part1 = response.text
+    except requests.exceptions.RequestException as e:
+        # Handle connection errors, timeouts, etc.
+        print(f"Error fetching starter code: {e}")
+
+    return render(request, "problem.jekyll", {
+        "selected_day": number,
+        "starter_code_part1": starter_code_part1
+    })
 
 def submit(request, number):
     pass

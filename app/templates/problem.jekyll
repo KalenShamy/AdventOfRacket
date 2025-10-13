@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>AdventOfRacket - Day {{ selected_day }}</title>
+        <link rel="stylesheet" href="/static/css/problem.css">
+        <script src="https://kit.fontawesome.com/69df78250d.js" crossorigin="anonymous"></script>
+
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Irish+Grover&display=swap" rel="stylesheet">
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js"></script>
+        <script>
+            require.config({ paths: { 'vs': 'https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs' }});
+            require(['vs/editor/editor.main'], function () {
+
+                // 1) Register language
+                monaco.languages.register({ id: 'racket' });
+
+                // 2) Monarch tokenizer
+                monaco.languages.setMonarchTokensProvider('racket', {
+                    // Racket is case-sensitive
+                    ignoreCase: false,
+                    // Common Racket/Scheme style line comments
+                    // ; comment
+                    // #| block comment |#
+                    brackets: [
+                        ['(', ')', 'delimiter.parenthesis'],
+                        ['[', ']', 'delimiter.square'],
+                    ],
+                    keywords: [
+                        // Function and variable definitions
+                        'define', 'define-syntax', 'define-values', 'define-struct', 'define-type',
+                        
+                        // Lambda and local bindings
+                        'lambda', 'let', 'let*', 'letrec', 'letrec*', 'let-values', 'let-syntax',
+                        
+                        // Control flow
+                        'if', 'cond', 'case', 'and', 'or', 'not', 'when', 'unless', 'begin', 'do', 'do*', 'for', 'for/list', 'for/vector', 'for/hash',
+                        
+                        // Modules and imports
+                        'module', 'require', 'provide', 'require-for-syntax', 'provide-for-syntax',
+                        
+                        // Macros and pattern matching
+                        'syntax-rules', 'syntax-case', 'match', 'match-lambda', 'quasisyntax', 'unsyntax', 'unsyntax-splicing',
+                        
+                        // Data structures
+                        'struct', 'vector', 'hash', 'list', 'set!', 'set-car!', 'set-cdr!', 'car', 'cdr', 'cons', 'append', 'map', 'for-each',
+                        
+                        // Misc / special forms
+                        'quote', 'quasiquote', 'unquote', 'unquote-splicing', 'begin0', 'delay', 'force'
+                    ],
+                    // Symbols that commonly appear as booleans/special
+                    constants: ['t','nil','#t','#f','#false','#true','false','true'],
+
+                    tokenizer: {
+                        root: [
+                            // Block comments #| ... |#
+                            [/#\|/, { token: 'comment', next: '@blockComment' }],
+
+                            // Line comments ; ... end
+                            [/;+.*/, 'comment'],
+
+                            // Strings with escapes
+                            [/"/, { token: 'string.quote', next: '@string' }],
+
+                            // Numbers (ints, floats, radix forms like #x, #b, #o)
+                            [/(#x[0-9a-fA-F]+|#b[01]+|#o[0-7]+|\d+\.\d+|\d+)/, 'number'],
+
+                            // Quoting forms: ', `, , ,@ treated as operators
+                            [/['`,]/, 'operator'],
+                            [/,@/, 'operator'],
+
+                            // Keywords and identifiers
+                            [
+                                /[a-zA-Z_+\-*\/<>=!?$%&~^:.][a-zA-Z0-9_+\-*\/<>=!?$%&~^:.]*/,
+                                {
+                                    cases: {
+                                        '@keywords': 'keyword',
+                                        '@constants': 'constant',
+                                        '@default': 'identifier',
+                                    },
+                                },
+                            ],
+
+                            
+                            [/[,:]/, 'delimiter']
+                        ],
+
+                        // Multiline block comments
+                        blockComment: [
+                            [/\|#/, { token: 'comment', next: '@pop' }],
+                            [/./, 'comment']
+                        ],
+
+                        // Strings with escapes until closing quote
+                        string: [
+                            [/\\./, 'string.escape'],
+                            [/"/, { token: 'string.quote', next: '@pop' }],
+                            [/[^\\"]+/, 'string'],
+                        ],
+                    }
+                });
+
+                // 3) Optional bracket config for matching
+                monaco.languages.setLanguageConfiguration('racket', {
+                    comments: {
+                        lineComment: ';',
+                        blockComment: ['#|', '|#']
+                    },
+                    brackets: [['(', ')'], ['[', ']']],
+                    autoClosingPairs: [
+                        { open: '(', close: ')' },
+                        { open: '[', close: ']' },
+                        { open: '"', close: '"' },
+                    ],
+                    surroundingPairs: [
+                        { open: '(', close: ')' },
+                        { open: '[', close: ']' },
+                        { open: '"', close: '"' },
+                    ]
+                });
+
+                // 4) Theme rules
+                monaco.editor.defineTheme('racket-dark', {
+                    base: 'vs-dark',
+                    inherit: true,
+                    rules: [
+                        { token: 'comment', foreground: '6A9955' },
+                        { token: 'string', foreground: 'CE9178' },
+                        { token: 'number', foreground: 'B5CEA8' },
+                        { token: 'keyword', foreground: 'C586C0' },
+                        { token: 'constant', foreground: '4FC1FF' },
+                        { token: 'identifier', foreground: 'D4D4D4' },
+                        { token: 'operator', foreground: 'D4D4D4' },
+                        { token: 'delimiter.parenthesis', foreground: 'D4D4D4' },
+                    ],
+                    colors: {}
+                });
+
+                monaco.editor.create(document.getElementById('editor'), {
+                    value: `{{ starter_code_part1|escapejs }}`,
+                    language: "racket",
+                    theme: "racket-dark",
+                    automaticLayout: true,
+                    minimap: {
+                        enabled: false
+                    },
+                    contextmenu: false,
+                    matchBrackets: 'always'
+                });
+            });
+        </script>
+    </head>
+    <body>
+        <nav>
+            <a id="title" href="/">
+                <img src="/static/img/logo.svg" alt="Logo">
+                Advent Of Racket
+            </a>
+            <div id="controls">
+                <a href="" id="run-button"><img src="/static/img/run.svg" alt=""></a>
+                <div id="timer-container">
+                    <img src="/static/img/hourglass.svg" alt="">
+                    <span id="timer">00:00:00</span>
+                </div>
+            </div>
+            <div>
+                <p>Kalen Shamy</p>
+            </div>
+        </nav>
+        <div class="content">
+            <div id="description" class="container">
+                <p>Description</p>
+                <iframe src="https://api.adventofracket.com/md/{{ selected_day }}/1" frameborder="0"></iframe>
+            </div>
+            <div>
+                <div id="code" class="container">
+                    <p>Code</p>
+                    <div id="editor" style="height: 600px; border: 1px solid #333;">
+                    </div>
+                </div>
+                <div id="tests" class="container">
+                    <p>Tests</p>
+                    
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

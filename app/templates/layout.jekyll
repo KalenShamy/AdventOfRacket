@@ -22,7 +22,7 @@
                 </a>
                 <div class="account">
                     {% if user.is_authenticated %}
-                        <p>user.name</p>
+                        <p>{{ user.name }}</p>
                     {% else %}
                         <a href="/login">log in</a>
                     {% endif %}

@@ -14,7 +14,7 @@
 <div class="stars">
     {% for star in stars %}
         {% if star.open %}
-            <a href="/problems/{{ star.i }}" class="star open">
+            <a href="/problem/{{ star.i }}" class="star open">
         {% else %}
             <a class="star closed">
         {% endif %}
