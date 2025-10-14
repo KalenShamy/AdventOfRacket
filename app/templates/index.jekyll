@@ -2,14 +2,31 @@
 {% block title %}Home{% endblock %}
 {% block css %}index{% endblock %}
 {% block content %}
+{% if new_user %}
+    <div id="popup-background" onclick="document.getElementById('popup-background').style.display='none';">
+        <div id="popup">
+            <h1>Welcome, Kalen Shamy!</h1>
+            <br>
+            <p>
+                Daily problems from December 1st to December 25th
+                <br><br>
+                You have 30s to read the problem, then the timer starts
+                <br><br>
+                Be the first to finish to score points!
+                <br><br>
+                <span class="hide">click anywhere to clse</span>
+            </p>
+        </div>
+    </div>
+{% endif %}
 <p>
-    Inspired by <span class="shiny"><a href="https://adventofcode.com/" target="_blank">AoC</a></span>,
+    The <span class="shiny"><a href="https://racket-lang.org/" target="_blank">Racket</a></span> language is hell.
     <br>
-    Molded by the hell that is the <span class="shiny"><a href="https://racket-lang.org/" target="_blank">Racket</a></span> programming language.
+    So here's <span class="shiny"><a href="https://adventofcode.com/" target="_blank">Advent of Code</a></span>,
     <br>
-    And yes, you <span class="shiny">have</span> to use Racket.
+    but you <span class="shiny">have</span> to use Racket.
     <br>
-    <span class="hide">sorry!</span>
+    <span class="hide">Unique daily problems designed for Racket</span>
 </p>
 <div class="stars">
     {% for star in stars %}

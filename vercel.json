@@ -1,0 +1,26 @@
+{
+  "version": 2,
+  "builds": [
+        {
+            "src": "AdventOfRacket/asgi.py",
+            "use": "@vercel/python"
+        },
+        {
+            "src": "staticfiles/**/*",
+            "use": "@vercel/static"
+        }
+    ],
+    "routes": [
+        {
+            "src": "/static/(.*)",
+            "dest": "staticfiles/$1"
+        },
+        {
+            "src": "/(.*)",
+            "dest": "AdventOfRacket/asgi.py"
+        }
+    ],
+    "env": {
+        "DJANGO_SETTINGS_MODULE": "AdventOfRacket.settings"
+    }
+}

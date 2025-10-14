@@ -1,18 +1,21 @@
 import json
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required
-from django.db import IntegrityError
 from django.http import JsonResponse
-from django.shortcuts import HttpResponse, HttpResponseRedirect, render
+from django.shortcuts import HttpResponse, HttpResponseRedirect, render, redirect
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.core.paginator import Paginator
-
+from .models import User, Problem
 import requests
 from datetime import date
+import os
+from dotenv import load_dotenv
 
-# Create your views here.
-login_url = "https://github.com/login/oauth/authorize?client_id=Iv23libtWYyxnUndDKbu&duration=temporary&redirect_uri=https%3A%2F%2Fadventofracket.com%2Fauth&response_type=code&scope=&state=x"
+load_dotenv()
+
+def require_login(request):
+    if not request.session.get("user_id"):
+        return False, redirect("/login")
+    return True, None
 
 def day_available(day):
     current_date = date.today()
@@ -23,9 +26,17 @@ def day_available(day):
 def index(request):
     if request.method != "GET":
         return JsonResponse({"error": request.method + " not allowed here"}, status=400)
+    new_user = request.session.get("new_user", False)
+    request.session["new_user"] = False
+    username = None
+    problems = []
+    if request.session.get("user_id"):
+        username = request.session.get("username")
     stars = [{"i": i, "open": day_available(i)} for i in range(1,26)]
     return render(request, "index.jekyll", {
-        "stars": stars
+        "username": username,
+        "stars": stars,
+        "new_user": new_user
     })
 
 def leaderboard(request, day=None):
@@ -55,6 +66,12 @@ def problem(request, number=None):
     if request.method != "GET":
         return JsonResponse({"error": request.method + " not allowed here"}, status=400)
     
+    is_logged_in, redirect_url = require_login(request)
+    if not is_logged_in:
+        return redirect_url
+    
+    username = request.session.get("username")
+
     if number == None:
         current_date = date.today()
         if current_date.month != 12:
@@ -76,22 +93,63 @@ def problem(request, number=None):
 
     return render(request, "problem.jekyll", {
         "selected_day": number,
-        "starter_code_part1": starter_code_part1
+        "starter_code_part1": starter_code_part1,
+        "username": username
     })
 
 def submit(request, number):
     pass
 
-@login_required
-def settings(request):
-    pass
+# GitHub OAuth
 
-def login_view(request):
-    return HttpResponseRedirect(login_url)
+def github_login(request):
+    github_auth_url = (
+        f"https://github.com/login/oauth/authorize?client_id={os.getenv("GITHUB_OAUTH_CLIENT_ID")}&scope=read:user"
+    )
+    return redirect(github_auth_url)
 
-def logout_view(request):
-    logout(request)
-    return HttpResponseRedirect(reverse("index"))
+def github_callback(request):
+    code = request.GET.get("code")
 
-def auth(request):
-    pass
+    # Exchange code for access token
+    token_response = requests.post(
+        "https://github.com/login/oauth/access_token",
+        data={
+            "client_id": os.getenv("GITHUB_OAUTH_CLIENT_ID"),
+            "client_secret": os.getenv("GITHUB_OAUTH_CLIENT_SECRET"),
+            "code": code,
+        },
+        headers={"Accept": "application/json"},
+    )
+    access_token = token_response.json().get("access_token")
+
+    # Fetch user info
+    user_response = requests.get(
+        "https://api.github.com/user",
+        headers={"Authorization": f"Bearer {access_token}"},
+    )
+    user_data = user_response.json()
+
+    github_id = str(user_data["id"])
+    user = User.objects(github_id=github_id).first()
+
+    if not user:
+        user = User(github_id=github_id)
+        request.session["new_user"] = True
+
+    user.username = user_data["name"] if user_data["name"] else user_data["login"]
+    user.url = user_data["html_url"]
+    user.avatar_url = user_data["avatar_url"]
+    user.access_token = access_token
+    user.save()
+
+    # Store login in session
+    request.session["user_id"] = str(user.github_id)
+    request.session["username"] = user.username
+    request.session["user_data"] = user_data
+
+    return redirect("/")  # Redirect to homepage or dashboard
+
+def logout(request):
+    request.session.flush()  # Clear all session data
+    return redirect("/")  # Redirect to homepage

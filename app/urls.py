@@ -14,9 +14,7 @@ urlpatterns = [
     #path("profile/edit", views.edit_profile, name="edit_profile"),
     #path("profile/<str:username>", views.profile, name="profile"),
 
-    path("auth", views.auth, name="auth"),
-    path("settings", views.settings, name="settings"),
-
-    path("login", views.login_view, name="login"),
-    path("logout", views.logout_view, name="logout"),
+    path("login", views.github_login, name="github_login"),
+    path("callback", views.github_callback, name="github_callback"),
+    path("logout", views.logout, name="logout"),
 ]

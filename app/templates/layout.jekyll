@@ -20,9 +20,10 @@
                 <a href="/leaderboard">
                     leaderboard
                 </a>
-                <div class="account">
-                    {% if user.is_authenticated %}
-                        <p>{{ user.name }}</p>
+                <div id="account">
+                    {% if username %}
+                        <a href="/logout">log out</a>
+                        <p>{{ username }}</p>
                     {% else %}
                         <a href="/login">log in</a>
                     {% endif %}
