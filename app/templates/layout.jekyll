@@ -22,8 +22,7 @@
                 </a>
                 <div id="account">
                     {% if username %}
-                        <a href="/logout">log out</a>
-                        <p>{{ username }}</p>
+                        <a href="/logout">log out</a><p>{{ username }}</p>
                     {% else %}
                         <a href="/login">log in</a>
                     {% endif %}

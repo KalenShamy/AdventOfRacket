@@ -1,0 +1,6 @@
+db.sqlite3
+app/__pycache__/
+app/migrations/
+.vercel
+.env
+staticfiles/
