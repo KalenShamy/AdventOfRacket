@@ -38,7 +38,7 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '.vercel.app', 'adventofracket.com']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '.vercel.app', '.adventofracket.com']
 
 SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
 
