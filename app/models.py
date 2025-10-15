@@ -23,9 +23,11 @@ class Problem(Document):
     player = StringField(required=True)
     day = IntField(required=True)
     part = IntField(required=True)  # 1 or 2
-    timestamp = DateTimeField(default=datetime.now(eastern_tz_info))
-    code = StringField(required=True)
-    time_taken = IntField(required=True)  # in seconds
+    time_started = DateTimeField(default=datetime.now(eastern_tz_info))
+    code = StringField()
+    correct = BooleanField(default=False)
+    time_taken = IntField()  # in seconds
+    total_time = IntField()  # in seconds, cumulative time including previous parts
 
     def __str__(self):
         return f"Submission by {self.player} for {self.day}.{self.part} taking {self.time_taken} seconds"

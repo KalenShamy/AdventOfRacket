@@ -139,7 +139,7 @@
                 });
 
                 monaco.editor.create(document.getElementById('editor'), {
-                    value: `{{ starter_code_part1|escapejs }}`,
+                    value: `{{ starter_code|escapejs }}`,
                     language: "racket",
                     theme: "racket-dark",
                     automaticLayout: true,
@@ -172,7 +172,7 @@
         <div class="content">
             <div id="description" class="container">
                 <p>Description</p>
-                <iframe src="https://api.adventofracket.com/md/{{ selected_day }}/1" frameborder="0"></iframe>
+                <iframe src="https://api.adventofracket.com/md/{{ selected_day }}/{{ selected_part }}" frameborder="0"></iframe>
             </div>
             <div>
                 <div id="code" class="container">

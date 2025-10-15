@@ -1,5 +1,13 @@
-.star.open svg {
-    color: #9F1D20;
+.star.open.part1 svg {
+    color: var(--red);
+}
+
+.star.open.part2 svg {
+    color: var(--blue);
+}
+
+.star.open.completed svg {
+    color: var(--golden);
 }
 
 .star.closed svg {
