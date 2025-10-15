@@ -180,7 +180,7 @@ def submit(request, day, part=1):
 
 def github_login(request):
     github_auth_url = (
-        f"https://github.com/login/oauth/authorize?client_id={os.getenv("GITHUB_OAUTH_CLIENT_ID")}&scope=read:user"
+        f"https://github.com/login/oauth/authorize?client_id={os.getenv('GITHUB_OAUTH_CLIENT_ID')}&scope=read:user"
     )
     return redirect(github_auth_url)
 
