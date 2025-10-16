@@ -141,48 +141,16 @@ span.hide {
     overflow: clip;
 }
 
-pre {
-    margin: 0;
+#editor {
+    border: none !important;
 }
 
-#line-numbers {
-    padding-left: 35px;
-    height: calc(100% - 30px);
-    text-align: right;
-    user-select: none;
-    color: #888;
-    font-family: monospace;
-    line-height: 20px;
+#editor .margin {
+    margin-top: 5px;
 }
 
-#code-block {
-    display: flex;
-    height: 100%;
-    width: calc(100% - 35px);
-}
-
-pre {
-    min-width: 100%;
-}
-
-#code-content {
-    min-width: 100%;
-    padding-top: 13px;
-    width: calc(100% - 30px);
-    outline: none;
-    display: block;
-    height: 100%;
-    line-height: 20px;
-    overflow: scroll;
-    box-sizing: border-box;
-}
-
-#code-block .hljs-name {
-    color: #7ee787;
-}
-
-#code-block .hljs-number {
-    color: #79c0ff;
+#editor .lines-content {
+    margin-top: 5px;
 }
 
 #tests {
