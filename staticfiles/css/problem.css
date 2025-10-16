@@ -35,7 +35,7 @@ nav p {
 }
 
 nav > div > * {
-    margin-left: 16px;
+    margin-left: 7px;
 }
 
 nav a {
@@ -55,6 +55,56 @@ nav #title {
 nav #title img {
     height: 50px;
 }
+
+nav #controls {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.countdown > * {
+    color: var(--blue);
+}
+.submittable > * {
+    color: var(--golden);
+}
+
+#run-button {
+    width: 25px;
+    padding: 5px;
+    background: #1e1e1e;
+    height: 25px;
+    border-radius: 2px;
+}
+
+#run-button:hover {
+    cursor: not-allowed;
+}
+
+.submittable > #run-button:hover {
+    background: var(--dark-grey);
+    cursor: pointer;
+}
+
+#run-button svg {
+    display: block;
+}
+
+#timer-container {
+    background: #1e1e1e;
+    height: 25px;
+    border-radius: 2px;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+}
+
+#timer-container svg {
+    height: 25px;
+    width: 25px;
+    margin-right: 5px;
+}
+
 
 .content {
     padding: 20px;
