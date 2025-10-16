@@ -147,7 +147,8 @@
                         enabled: false
                     },
                     contextmenu: false,
-                    matchBrackets: 'always'
+                    matchBrackets: 'always',
+                    fontSize: 16,
                 });
             });
         </script>
