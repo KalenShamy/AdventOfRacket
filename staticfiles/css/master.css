@@ -9,7 +9,7 @@
 body {
     margin: 0;
     padding: 0;
-    background-color: #181818;
+    background-color: #151515;
 }
 
 nav {
@@ -96,7 +96,7 @@ span.hide {
     position: absolute;
     top: 50%;
     left: 50%;
-    background: #181818;
+    background: #151515;
     z-index: 5;
     transform: translate(-50%,-50%);
     border-radius: 7px;

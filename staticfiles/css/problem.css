@@ -9,7 +9,7 @@
 body {
     margin: 0;
     padding: 0;
-    background-color: #181818;
+    background-color: #151515;
 }
 
 nav {
@@ -105,7 +105,7 @@ span.hide {
 }
 
 .container {
-    background-color: #272727;
+    background-color: #1e1e1e;
     border-radius: 7px;
     position: relative;
     overflow: hidden;
@@ -121,7 +121,7 @@ span.hide {
     font-size: 16px;
     line-height: 30px;
     padding-left: 15px;
-    background-color: #414141;
+    background-color: #333;
 }
 
 #description {
@@ -172,7 +172,6 @@ pre {
     outline: none;
     display: block;
     height: 100%;
-    background: #272727 !important;
     line-height: 20px;
     overflow: scroll;
     box-sizing: border-box;
