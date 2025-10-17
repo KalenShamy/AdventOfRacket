@@ -60,6 +60,7 @@ nav #controls {
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
+    font-family: 'Open Sans', sans-serif;
 }
 
 .countdown > * {
@@ -67,6 +68,9 @@ nav #controls {
 }
 .submittable > * {
     color: var(--golden);
+}
+.completed > * {
+    color: var(--dark-grey);
 }
 
 #run-button {
@@ -124,7 +128,6 @@ nav #controls {
 
 p {
     color: #DDD;
-    font-size: 26px;
     margin-top: 0;
 }
 
@@ -186,7 +189,7 @@ span.hide {
 
 #code {
     padding: 30px 0 0 0;
-    height: 70%;
+    height: 60%;
     position: relative;
     overflow: clip;
 }
@@ -204,7 +207,31 @@ span.hide {
 }
 
 #tests {
-    height: 30%;
+    height: 40%;
+}
+
+#test-results {
+    font-family: 'Open Sans', sans-serif;
+    position: absolute;
+    top: 30px;
+    padding: 15px;
+    width: calc(100% - 30px);
+    height: calc(100% - 60px);
+    overflow: scroll;
+}
+
+.test-case span {
+    background: #333;
+    padding: 0 2px;
+    border-radius: 2px;
+    display: inline-block;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.test-case svg {
+    width: 25px;
+    position: relative;
+    top: 5px;
 }
 
 #code #read-only {
