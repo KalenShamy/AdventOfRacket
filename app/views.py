@@ -148,6 +148,8 @@ def submit(request, day, part=1):
     problem = Problem.objects(player=user.username, day=day, part=part).first()
     if not problem:
         return JsonResponse({"error": "Problem not started yet"}, status=400)
+    if problem.correct:
+        return JsonResponse({"message": "Problem already completed"}, status=200)
 
     code = json.loads(request.body).get("code", "")
     if not code:
