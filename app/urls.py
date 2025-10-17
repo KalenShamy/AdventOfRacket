@@ -5,9 +5,7 @@ from . import views
 urlpatterns = [
     path("", views.index, name="index"),
     path("problem/<int:day>/<int:part>", views.problem, name="problem"),
-    path("problem/<int:day>", views.problem, name="problem"),
     path("problem/<int:day>/<int:part>/submit", views.submit, name="submit"),
-    path("problem/<int:day>/submit", views.submit, name="submit"), # TODO: remove this later
     path("leaderboard", views.leaderboard, name="leaderboard"),
     path("leaderboard/<int:day>", views.leaderboard, name="leaderboard"),
 
