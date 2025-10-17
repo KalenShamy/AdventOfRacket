@@ -13,6 +13,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+TIME_TO_READ = 31 # seconds
+
 def require_login(request):
     if not request.session.get("user_id"):
         return False, redirect("/login")
@@ -107,7 +109,7 @@ def problem(request, day, part=1):
 
     if started_problem and started_problem.code:
         starter_code = started_problem.code
-    else:
+    elif not started_problem:
         # create a new problem entry if not started
         new_problem = Problem(player=username, day=day, part=part)
         new_problem.save()
@@ -117,6 +119,7 @@ def problem(request, day, part=1):
         else:
             user.problems[day-1].append(new_problem)
         user.save()
+        started_problem = new_problem
     if part != 1:
         previous_problem = Problem.objects(player=username, day=day, part=1, correct=True).first()
         if not previous_problem:
@@ -126,11 +129,12 @@ def problem(request, day, part=1):
 
     return render(request, "problem.jekyll", {
         "selected_day": day,
-        "starter_code": starter_code,
         "selected_part": part,
+        "starter_code": starter_code,
         "username": username,
         "test_cases": test_cases["public"],
         "is_completed": started_problem.correct if started_problem else False,
+        "time_started": started_problem.time_started.timestamp() + TIME_TO_READ,
     })
 
 def submit(request, day, part=1):
@@ -145,7 +149,7 @@ def submit(request, day, part=1):
     if not problem:
         return JsonResponse({"error": "Problem not started yet"}, status=400)
 
-    code = request.POST.get("code", "")
+    code = json.loads(request.body).get("code", "")
     if not code:
         return JsonResponse({"error": "No code submitted"}, status=400)
     
@@ -168,7 +172,7 @@ def submit(request, day, part=1):
     else:
         problem.code = code
         problem.correct = True
-        problem.time_taken = -30 + int(datetime.now().timestamp() - problem.time_started.timestamp())
+        problem.time_taken = -TIME_TO_READ + int(datetime.now().timestamp() - problem.time_started.timestamp())
         if part == 2:
             part1_problem = Problem.objects(player=user.username, day=day, part=1).first()
             problem.total_time = problem.time_taken + part1_problem.time_taken
