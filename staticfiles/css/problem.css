@@ -206,3 +206,32 @@ span.hide {
 #tests {
     height: 30%;
 }
+
+#code #read-only {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    z-index: 5;
+}
+
+#code #read-only:active {
+    background: #1e1e1eaa;
+}
+
+#code #read-only p {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    color: #ddd;
+    font-size: 20px;
+    z-index: 6;
+}
+
+#code #read-only:hover {
+    cursor: not-allowed;
+}
+
+#code #read-only:hover {
+    cursor: not-allowed;
+}
