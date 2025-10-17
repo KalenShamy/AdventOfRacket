@@ -28,6 +28,8 @@ class Problem(Document):
     correct = BooleanField(default=False)
     time_taken = IntField()  # in seconds
     total_time = IntField()  # in seconds, cumulative time including previous parts
+    tests = ListField(StringField())  # list of [user_output] (index aligns with test cases)
+    tests_message = StringField()  # message about the tests, e.g. "All tests passed" or "3/5 tests passed"
 
     def __str__(self):
         return f"Submission by {self.player} for {self.day}.{self.part} taking {self.time_taken} seconds"
