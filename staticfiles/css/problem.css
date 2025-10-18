@@ -247,11 +247,11 @@ span.hide {
 
 #code #read-only p {
     position: absolute;
-    top: 50%;
+    top: -15px;
     left: 50%;
     transform: translate(-50%,-50%);
     color: #ddd;
-    font-size: 20px;
+    font-size: 16px;
     z-index: 6;
 }
 
