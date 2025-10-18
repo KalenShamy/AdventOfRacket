@@ -231,7 +231,7 @@ span.hide {
 .test-case svg {
     width: 25px;
     position: relative;
-    top: 5px;
+    top: 8px;
 }
 
 #code #read-only {
