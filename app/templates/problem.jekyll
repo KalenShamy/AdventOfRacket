@@ -196,6 +196,15 @@
                 });
             }
 
+            function setClock(elapsed) {
+                const hours = String(Math.floor(elapsed / 3600)).padStart(2, '0');
+                elapsed %= 3600;
+                const minutes = String(Math.floor(elapsed / 60)).padStart(2, '0');
+                const seconds = String(elapsed % 60).padStart(2, '0');
+
+                document.getElementById('timer').textContent = hours + ':' + minutes + ':' + seconds;
+            }
+
             function updateTimeElapsed() {
                 const startTime = {{ time_started }};
                 const now = Date.now() / 1000; // current time in seconds
@@ -213,17 +222,16 @@
                     document.getElementById('read-only').style.display = 'none';
                 }
 
-                const hours = String(Math.floor(elapsed / 3600)).padStart(2, '0');
-                elapsed %= 3600;
-                const minutes = String(Math.floor(elapsed / 60)).padStart(2, '0');
-                const seconds = String(elapsed % 60).padStart(2, '0');
-
-                document.getElementById('timer').textContent = hours + ':' + minutes + ':' + seconds;
+                if (!COMPLETED) {
+                    setClock(elapsed);
+                }
             }
 
             document.addEventListener('DOMContentLoaded', function() {
                 if (COMPLETED) {
                         document.getElementById('run-button').disabled = true;
+                    
+                    setClock({{ time_taken }});
                     
                     setInterval(()=>{
                         if (document.activeElement.ariaRoleDescription == "editor") {
