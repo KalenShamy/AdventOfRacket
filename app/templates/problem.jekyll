@@ -153,8 +153,9 @@
             });
         </script>
         <script>
+            window.COMPLETED = {{ is_completed|yesno:"true,false" }}
             function submitCode() {
-                if ({{ is_completed|yesno:"true,false" }} || document.getElementById('run-button').disabled) {
+                if (COMPLETED || document.getElementById('run-button').disabled) {
                     return;
                 }
                 const code = editor.getValue();
@@ -183,6 +184,7 @@
                     const testsDiv = document.getElementById('test-results');
                     testsDiv.innerHTML = data.tests_html;
                     if (data.success) {
+                        COMPLETED = true;
                         document.getElementById('run-button').disabled = true;
                         document.getElementById('controls').classList.remove('submittable');
                         document.getElementById('controls').classList.add('completed');
@@ -201,7 +203,11 @@
                 let isReading = elapsed < 0;
                 elapsed = Math.abs(elapsed);
 
-                if (!isReading) {
+                if (isReading) {
+                    if (document.activeElement.ariaRoleDescription == "editor") {
+                        document.activeElement.blur();
+                    }
+                } else {
                     document.getElementById('controls').classList.remove('countdown');
                     document.getElementById('controls').classList.add('submittable');
                     document.getElementById('read-only').style.display = 'none';
@@ -216,9 +222,14 @@
             }
 
             document.addEventListener('DOMContentLoaded', function() {
-                if ({{ is_completed|yesno:"true,false" }}) {
+                if (COMPLETED) {
                         document.getElementById('run-button').disabled = true;
-                        updateTimeElapsed();
+                    
+                    setInterval(()=>{
+                        if (document.activeElement.ariaRoleDescription == "editor") {
+                            document.activeElement.blur();
+                        }
+                    }, 50);
 
                         document.getElementById('controls').classList.remove('submittable');
                         document.getElementById('controls').classList.add('completed');
