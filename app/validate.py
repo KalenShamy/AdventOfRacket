@@ -46,6 +46,9 @@ def verify_tests(tests, output):
     public_total = len(tests["public"])
     hidden_total = len(tests["hidden"])
 
+    if len(output) < public_total + hidden_total:
+        return False, {"message": "Your code crashed during execution"}
+
     for i, test in enumerate(tests["public"]):
         expected = test[1]
         actual = output[i]

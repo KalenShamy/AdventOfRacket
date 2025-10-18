@@ -135,13 +135,15 @@ def problem(request, day, part=1):
         else:
             test_cases["public"][i] = {"input": test[0], "expected": test[1]}
 
+    is_completed = started_problem.correct if started_problem else False
 
     return render(request, "problem.jekyll", {
         "selected_day": day,
         "selected_part": part,
         "starter_code": starter_code,
         "username": username,
-        "is_completed": started_problem.correct if started_problem else False,
+        "is_completed": is_completed,
+        "time_taken": started_problem.time_taken if is_completed else False,
         "time_started": started_problem.time_started.timestamp() + TIME_TO_READ,
 
         "tests": render(request, "tests.jekyll", {
@@ -180,13 +182,13 @@ def submit(request, day, part=1):
     passed, tests_status = validate_code(code, test_cases)
     problem.code = code
     problem.tests = tests_status.get("results", [])
-    problem.tests_message = tests_status.get("message", "")
+    problem.tests_message = tests_status.get("message", "Unknown error")
 
     for i in range(len(test_cases["public"])):
         test = test_cases["public"][i]
-        if problem and problem.tests and i < len(problem.tests):
+        if problem and problem.tests and i <= len(problem.tests):
             test_cases["public"][i] = {"input": test[0], "expected": test[1], "output": problem.tests[i]}
-        else: 
+        else:
             test_cases["public"][i] = {"input": test[0], "expected": test[1]}
 
     tests_html = render(request, "tests.jekyll", {
@@ -197,6 +199,8 @@ def submit(request, day, part=1):
     if passed:
         problem.correct = True
         problem.time_taken = -TIME_TO_READ + int(datetime.now().timestamp() - problem.time_started.timestamp())
+        if problem.time_taken < 0:
+            return JsonResponse({"error": "Please read the problem"})
         if part == 2:
             part1_problem = Problem.objects(player=user.username, day=day, part=1).first()
             problem.total_time = problem.time_taken + part1_problem.time_taken
