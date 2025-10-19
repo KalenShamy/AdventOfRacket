@@ -157,6 +157,14 @@
             });
         </script>
         <script>
+            function showContinueButton() {
+                let continueButton = document.getElementById("continue")
+                if (continueButton) {
+                    continueButton.style.display = "block";
+                    continueButton.style.opacity = 1;
+                }
+            }
+
             window.COMPLETED = {{ is_completed|yesno:"true,false" }}
             function submitCode() {
                 if (COMPLETED || document.getElementById('run-button').disabled) {
@@ -194,6 +202,8 @@
                         document.getElementById('controls').classList.remove('submittable');
                         document.getElementById('controls').classList.add('completed');
                         document.getElementById('read-only').style.display = 'block';
+
+                        showContinueButton()
                     } else {
                         document.getElementById('run-button').disabled = false;
                     }
@@ -234,7 +244,7 @@
 
             document.addEventListener('DOMContentLoaded', function() {
                 if (COMPLETED) {
-                        document.getElementById('run-button').disabled = true;
+                    showContinueButton();
                     
                     setClock({{ time_taken }});
                     
@@ -291,6 +301,11 @@
             <div id="description" class="container">
                 <p>Description</p>
                 <iframe src="https://api.adventofracket.com/md/{{ selected_day }}/{{ selected_part }}" frameborder="0"></iframe>
+                {% if selected_part == 1 %}
+                    <a id="continue" href="./2">Continue to Part 2 &rarr;</a>
+                {% elif selected_part == 2 %}
+                    <a id="return" href="./1">&larr; Return to Part 1</a>
+                {% endif %}
             </div>
             <div>
                 <div id="code" class="container">
