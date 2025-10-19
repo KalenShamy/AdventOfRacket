@@ -200,7 +200,7 @@ def submit(request, day, part=1):
         problem.correct = True
         problem.time_taken = -TIME_TO_READ + int(datetime.now().timestamp() - problem.time_started.timestamp())
         if problem.time_taken < 0:
-            return JsonResponse({"error": "Please read the problem"})
+            return JsonResponse({"error": "Please read the problem"}, status=400)
         if part == 2:
             part1_problem = Problem.objects(player=user.username, day=day, part=1).first()
             problem.total_time = problem.time_taken + part1_problem.time_taken
