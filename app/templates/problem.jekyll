@@ -198,7 +198,6 @@
                         document.getElementById('run-button').disabled = false;
                     }
                     document.getElementById('run-button').classList.remove('loading');
-                    console.log(data);
                 });
             }
 
