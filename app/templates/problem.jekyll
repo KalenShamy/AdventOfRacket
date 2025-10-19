@@ -228,7 +228,7 @@
                 elapsed = Math.abs(elapsed);
 
                 if (isReading) {
-                    if (document.activeElement.ariaRoleDescription == "editor") {
+                    if (document.activeElement.classList.contains("monaco-mouse-cursor-text")) {
                         document.activeElement.blur();
                     }
                 } else {
