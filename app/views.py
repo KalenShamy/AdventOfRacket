@@ -13,6 +13,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+TIME_TO_READ = 31 # seconds
+
 def require_login(request):
     if not request.session.get("user_id"):
         return False, redirect("/login")
@@ -107,7 +109,7 @@ def problem(request, day, part=1):
 
     if started_problem and started_problem.code:
         starter_code = started_problem.code
-    else:
+    elif not started_problem:
         # create a new problem entry if not started
         new_problem = Problem(player=username, day=day, part=part)
         new_problem.save()
@@ -117,6 +119,7 @@ def problem(request, day, part=1):
         else:
             user.problems[day-1].append(new_problem)
         user.save()
+        started_problem = new_problem
     if part != 1:
         previous_problem = Problem.objects(player=username, day=day, part=1, correct=True).first()
         if not previous_problem:
@@ -124,13 +127,29 @@ def problem(request, day, part=1):
             return HttpResponseRedirect(reverse("problem", args=[day, 1]))
         starter_code = starter_code + "\n\n" + previous_problem.code
 
+
+    for i in range(len(test_cases["public"])):
+        test = test_cases["public"][i]
+        if started_problem and started_problem.tests and i < len(started_problem.tests):
+            test_cases["public"][i] = {"input": test[0], "expected": test[1], "output": started_problem.tests[i]}
+        else:
+            test_cases["public"][i] = {"input": test[0], "expected": test[1]}
+
+    is_completed = started_problem.correct if started_problem else False
+
     return render(request, "problem.jekyll", {
         "selected_day": day,
-        "starter_code": starter_code,
         "selected_part": part,
+        "starter_code": starter_code,
         "username": username,
-        "test_cases": test_cases["public"],
-        "is_completed": started_problem.correct if started_problem else False,
+        "is_completed": is_completed,
+        "time_taken": started_problem.time_taken if is_completed else False,
+        "time_started": started_problem.time_started.timestamp() + TIME_TO_READ,
+
+        "tests": render(request, "tests.jekyll", {
+            "test_cases": test_cases["public"],
+            "tests_message": started_problem.tests_message if started_problem and started_problem.tests_message and len(started_problem.tests_message) > 0 else None,
+        }).content.decode('utf-8'),
     })
 
 def submit(request, day, part=1):
@@ -144,10 +163,10 @@ def submit(request, day, part=1):
     problem = Problem.objects(player=user.username, day=day, part=part).first()
     if not problem:
         return JsonResponse({"error": "Problem not started yet"}, status=400)
+    if problem.correct:
+        return JsonResponse({"error": "Problem already completed"}, status=400)
 
-    code = request.POST.get("code", "")
-    if not code:
-        return JsonResponse({"error": "No code submitted"}, status=400)
+    code = json.loads(request.body).get("code", "")
     
     # fetch test cases
     test_cases = {"public": [], "private": []}
@@ -161,19 +180,32 @@ def submit(request, day, part=1):
         return HttpResponse("Fetch Error 3", status=500)
     
     passed, tests_status = validate_code(code, test_cases)
-    if not passed:
-        problem.code = code
-        problem.save()
-        return JsonResponse({"error": "Code validation failed", "tests": tests_status}, status=400)
-    else:
-        problem.code = code
+    problem.code = code
+    problem.tests = tests_status.get("results", [])
+    problem.tests_message = tests_status.get("message", "Unknown error")
+
+    for i in range(len(test_cases["public"])):
+        test = test_cases["public"][i]
+        if problem and problem.tests and i <= len(problem.tests):
+            test_cases["public"][i] = {"input": test[0], "expected": test[1], "output": problem.tests[i]}
+        else:
+            test_cases["public"][i] = {"input": test[0], "expected": test[1]}
+
+    tests_html = render(request, "tests.jekyll", {
+        "test_cases": test_cases["public"],
+        "tests_message": problem.tests_message if problem and problem.tests_message and len(problem.tests_message) > 0 else None,
+    }).content.decode('utf-8')
+
+    if passed:
         problem.correct = True
-        problem.time_taken = -30 + int(datetime.now().timestamp() - problem.time_started.timestamp())
+        problem.time_taken = -TIME_TO_READ + int(datetime.now().timestamp() - problem.time_started.timestamp())
+        if problem.time_taken < 0:
+            return JsonResponse({"error": "Please read the problem"}, status=400)
         if part == 2:
             part1_problem = Problem.objects(player=user.username, day=day, part=1).first()
             problem.total_time = problem.time_taken + part1_problem.time_taken
-        problem.save()
-        return JsonResponse({"message": "All tests passed!", "tests": tests_status}, status=200)
+    problem.save()
+    return JsonResponse({"success": passed, "tests_html": tests_html}, status=200)
     
 
 # GitHub OAuth

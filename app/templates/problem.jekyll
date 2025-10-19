@@ -7,7 +7,7 @@
 
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Irish+Grover&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Irish+Grover&family=Open+Sans&display=swap" rel="stylesheet">
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js"></script>
         <script>
@@ -138,7 +138,7 @@
                     colors: {}
                 });
 
-                monaco.editor.create(document.getElementById('editor'), {
+                window.editor = monaco.editor.create(document.getElementById('editor'), {
                     value: `{{ starter_code|escapejs }}`,
                     language: "racket",
                     theme: "racket-dark",
@@ -147,8 +147,122 @@
                         enabled: false
                     },
                     contextmenu: false,
-                    matchBrackets: 'always'
+                    matchBrackets: 'always',
+                    fontSize: 16,
                 });
+
+                editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, function() {
+                    submitCode();
+                })
+            });
+        </script>
+        <script>
+            function showContinueButton() {
+                let continueButton = document.getElementById("continue")
+                if (continueButton) {
+                    continueButton.style.display = "block";
+                    continueButton.style.opacity = 1;
+                }
+            }
+
+            window.COMPLETED = {{ is_completed|yesno:"true,false" }}
+            function submitCode() {
+                if (COMPLETED || document.getElementById('run-button').disabled) {
+                    return;
+                }
+                const code = editor.getValue();
+                document.getElementById('run-button').classList.add('loading');
+                document.getElementById('run-button').disabled = true;
+                fetch('/problem/{{ selected_day }}/{{ selected_part }}/submit', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: JSON.stringify({
+                        code: code
+                    })
+                }).then(response => {
+                    if (response.status === 500) {
+                        throw new Error(response.statusText);
+                    } else {
+                        return response.json();
+                    }
+                })
+                .then(data => {
+                    if (data.error) {
+                        alert(data.error);
+                        return;
+                    }
+                    const testsDiv = document.getElementById('test-results');
+                    testsDiv.innerHTML = data.tests_html;
+                    if (data.success) {
+                        COMPLETED = true;
+                        document.getElementById('run-button').disabled = true;
+                        document.getElementById('controls').classList.remove('submittable');
+                        document.getElementById('controls').classList.add('completed');
+                        document.getElementById('read-only').style.display = 'block';
+
+                        showContinueButton()
+                    } else {
+                        document.getElementById('run-button').disabled = false;
+                    }
+                    document.getElementById('run-button').classList.remove('loading');
+                });
+            }
+
+            function setClock(elapsed) {
+                const hours = String(Math.floor(elapsed / 3600)).padStart(2, '0');
+                elapsed %= 3600;
+                const minutes = String(Math.floor(elapsed / 60)).padStart(2, '0');
+                const seconds = String(elapsed % 60).padStart(2, '0');
+
+                document.getElementById('timer').textContent = hours + ':' + minutes + ':' + seconds;
+            }
+
+            function updateTimeElapsed() {
+                const startTime = {{ time_started }};
+                const now = Date.now() / 1000; // current time in seconds
+                let elapsed = Math.floor(now - startTime);
+                let isReading = elapsed < 0;
+                elapsed = Math.abs(elapsed);
+
+                if (isReading) {
+                    if (document.activeElement.classList.contains("monaco-mouse-cursor-text")) {
+                        document.activeElement.blur();
+                    }
+                } else {
+                    document.getElementById('controls').classList.remove('countdown');
+                    document.getElementById('controls').classList.add('submittable');
+                    document.getElementById('read-only').style.display = 'none';
+                }
+
+                if (!COMPLETED) {
+                    setClock(elapsed);
+                }
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+                if (COMPLETED) {
+                    showContinueButton();
+                    
+                    setClock({{ time_taken }});
+                    
+                    setInterval(()=>{
+                        if (document.activeElement.ariaRoleDescription == "editor") {
+                            document.activeElement.blur();
+                        }
+                    }, 50);
+
+                        document.getElementById('controls').classList.remove('submittable');
+                        document.getElementById('controls').classList.add('completed');
+                        document.getElementById('read-only').style.display = 'block';
+                } else {
+                    setInterval(updateTimeElapsed, 200);
+                    
+                    // save code before leaving page
+                    window.addEventListener('beforeunload', function (e) {submitCode();});
+                }
             });
         </script>
     </head>
@@ -158,10 +272,24 @@
                 <img src="/static/img/logo.svg" alt="Logo">
                 Advent Of Racket
             </a>
-            <div id="controls">
-                <a href="" id="run-button"><img src="/static/img/run.svg" alt=""></a>
+            <div id="controls" class="countdown">
+                <a id="run-button" title="CTRL/CMD-Enter to run" onclick="submitCode()">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
+                        <g id="run-icon" class="transform-box" fill="currentColor">
+                            <path d="M187.2 100.9C174.8 94.1 159.8 94.4 147.6 101.6C135.4 108.8 128 121.9 128 136L128 504C128 518.1 135.5 531.2 147.6 538.4C159.7 545.6 174.8 545.9 187.2 539.1L523.2 355.1C536 348.1 544 334.6 544 320C544 305.4 536 291.9 523.2 284.9L187.2 100.9z"/>
+                        </g>
+                        <g id="loading-icon" fill="currentColor" aria-hidden="true">
+                            <circle class="transform-box" cx="140" cy="320" r="55"/>
+                            <circle class="transform-box" cx="320" cy="320" r="55"/>
+                            <circle class="transform-box" cx="500" cy="320" r="55"/>
+                        </g>
+                    </svg>
+                </a>
                 <div id="timer-container">
-                    <img src="/static/img/hourglass.svg" alt="">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
+                        <!--!Font Awesome Free v7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
+                        <path fill="currentColor" d="M128 96C128 78.3 142.3 64 160 64L480 64C497.7 64 512 78.3 512 96C512 113.7 497.7 128 480 128L480 139C480 181.4 463.1 222.1 433.1 252.1L365.2 320L433.1 387.9C463.1 417.9 480 458.6 480 501L480 512C497.7 512 512 526.3 512 544C512 561.7 497.7 576 480 576L160 576C142.3 576 128 561.7 128 544C128 526.3 142.3 512 160 512L160 501C160 458.6 176.9 417.9 206.9 387.9L274.8 320L206.9 252.1C176.9 222.1 160 181.4 160 139L160 128C142.3 128 128 113.7 128 96zM224 128L224 139C224 164.5 234.1 188.9 252.1 206.9L320 274.8L387.9 206.9C405.9 188.9 416 164.5 416 139L416 128L224 128zM224 512L416 512L416 501C416 475.5 405.9 451.1 387.9 433.1L320 365.2L252.1 433.1C234.1 451.1 224 475.5 224 501L224 512z"/>
+                    </svg>
                     <span id="timer">00:00:00</span>
                 </div>
             </div>
@@ -173,16 +301,25 @@
             <div id="description" class="container">
                 <p>Description</p>
                 <iframe src="https://api.adventofracket.com/md/{{ selected_day }}/{{ selected_part }}" frameborder="0"></iframe>
+                {% if selected_part == 1 %}
+                    <a id="continue" href="./2">Continue to Part 2 &rarr;</a>
+                {% elif selected_part == 2 %}
+                    <a id="return" href="./1">&larr; Return to Part 1</a>
+                {% endif %}
             </div>
             <div>
                 <div id="code" class="container">
                     <p>Code</p>
-                    <div id="editor" style="height: 600px; border: 1px solid #333;">
+                    <div id="read-only" style="">
+                        <p style="">read-only</p>
                     </div>
+                    <div id="editor" style="height: 600px; border: 1px solid #333;"></div>
                 </div>
                 <div id="tests" class="container">
                     <p>Tests</p>
-                    
+                    <div id="test-results">
+                        {{ tests | safe }}
+                    </div>
                 </div>
             </div>
         </div>
