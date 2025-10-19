@@ -2,11 +2,12 @@ import random
 import subprocess, tempfile
 
 def add_sandbox(code):
+    safe_code = code.replace("\\", "\\\\").replace('"', '\\"')
     return f"""
     #lang racket
         (require racket/sandbox)
 
-        (define run (make-evaluator 'racket "{code}"))
+        (define run (make-evaluator 'racket "{safe_code}"))
     """
 
 def add_tests(code, tests, delimiter):
