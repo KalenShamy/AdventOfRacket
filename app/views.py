@@ -79,12 +79,13 @@ def problem(request, day, part=1):
         return redirect_url
     
     username = request.session.get("username")
+    user_id = request.session.get("user_id")
     
     if not day_available(day):
         return HttpResponseRedirect(reverse("index"))
     
     # check if completed
-    started_problem = Problem.objects(player=username, day=day, part=part).first()
+    started_problem = Problem.objects(player=user_id, day=day, part=part).first()
     
     # fetch test cases
     test_cases = ""
@@ -111,7 +112,7 @@ def problem(request, day, part=1):
         starter_code = started_problem.code
     elif not started_problem:
         # create a new problem entry if not started
-        new_problem = Problem(player=username, day=day, part=part)
+        new_problem = Problem(player=user_id, day=day, part=part)
         new_problem.save()
         user = User.objects(github_id=request.session.get("user_id")).first()
         if len(user.problems) < day:
@@ -121,7 +122,7 @@ def problem(request, day, part=1):
         user.save()
         started_problem = new_problem
     if part != 1:
-        previous_problem = Problem.objects(player=username, day=day, part=1, correct=True).first()
+        previous_problem = Problem.objects(player=user_id, day=day, part=1, correct=True).first()
         if not previous_problem:
             # redirect to part 1 if not completed
             return HttpResponseRedirect(reverse("problem", args=[day, 1]))
@@ -159,8 +160,10 @@ def submit(request, day, part=1):
     is_logged_in, redirect_url = require_login(request)
     if not is_logged_in:
         return redirect_url
-    user = User.objects(github_id=request.session.get("user_id")).first()
-    problem = Problem.objects(player=user.username, day=day, part=part).first()
+    
+    user_id = request.session.get("user_id")
+
+    problem = Problem.objects(player=user_id, day=day, part=part).first()
     if not problem:
         return JsonResponse({"error": "Problem not started yet"}, status=400)
     if problem.correct:
