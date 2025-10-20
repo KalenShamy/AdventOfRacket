@@ -77,12 +77,12 @@ p.largeText {
 }
 
 
-span.shiny {
+.shiny {
     color: white;
     text-shadow: 0 0 5px #ffffffaa;
 }
 
-span.hide {
+.hide {
     color: var(--dark-grey);
 }
 
