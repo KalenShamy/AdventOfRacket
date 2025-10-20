@@ -55,9 +55,6 @@
                 </svg>
             <span class="day">{{ star.i }}</span>
         </a>
-
     {% endfor %}
-
-
 </div>
 {% endblock %}
