@@ -28,9 +28,12 @@ li {
     width: 100%;
 }
 
+li > .score {
+    color: var(--dark-grey);
+}
+
 li > a {
-    position: absolute;
-    left: 75px;
+    margin-left: 5px;
 }
 
 li > a.first {
