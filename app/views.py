@@ -10,6 +10,7 @@ import requests
 from datetime import date, datetime
 import os
 from dotenv import load_dotenv
+import traceback
 
 load_dotenv()
 
@@ -110,6 +111,7 @@ def problem(request, day, part=1):
         response.raise_for_status()
         test_cases = json.loads(response.text)
     except requests.exceptions.RequestException as e:
+        traceback.print_exc()
         print(f"Error fetching test cases: {e}")
         return HttpResponse("Fetch Error 1", status=500)
 
@@ -120,6 +122,7 @@ def problem(request, day, part=1):
         response.raise_for_status()
         starter_code = response.text
     except requests.exceptions.RequestException as e:
+        traceback.print_exc()
         print(f"Error fetching starter code: {e}")
         return HttpResponse("Fetch Error 2", status=500)
 
@@ -194,6 +197,7 @@ def submit(request, day, part=1):
         response.raise_for_status()
         test_cases = json.loads(response.text)
     except requests.exceptions.RequestException as e:
+        traceback.print_exc()
         print(f"Error fetching test cases: {e}")
         return HttpResponse("Fetch Error 3", status=500)
     
