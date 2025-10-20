@@ -68,9 +68,14 @@ nav #title {
 
 p {
     color: #DDD;
-    font-size: 26px;
+    font-size: 22px;
     margin-top: 0;
 }
+
+p.largeText {
+    font-size: 26px;
+}
+
 
 span.shiny {
     color: white;

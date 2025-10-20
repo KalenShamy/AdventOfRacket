@@ -19,7 +19,7 @@
         </div>
     </div>
 {% endif %}
-<p>
+<p class="largeText">
     The <span class="shiny"><a href="https://racket-lang.org/" target="_blank">Racket</a></span> language is hell.
     <br>
     So here's <span class="shiny"><a href="https://adventofcode.com/" target="_blank">Advent of Code</a></span>,
