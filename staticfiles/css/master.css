@@ -82,6 +82,16 @@ p.largeText {
     text-shadow: 0 0 5px #ffffffaa;
 }
 
+.shiny svg {
+    filter: drop-shadow(0 0 2px white);
+    -webkit-filter: drop-shadow(0 0 2px white);
+}
+
+.shiny a:hover svg {
+    filter: none;
+    -webkit-filter: none;
+}
+
 .hide {
     color: var(--dark-grey);
 }
