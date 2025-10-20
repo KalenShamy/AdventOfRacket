@@ -26,6 +26,13 @@ def day_available(day):
         current_date = date(2025, 12, 1)
     return day <= current_date.day
 
+def format_time(elapsed):
+    hours = f"{elapsed // 3600:02}"
+    elapsed %= 3600
+    minutes = f"{elapsed // 60:02}"
+    seconds = f"{elapsed % 60:02}"
+    return f"{hours}:{minutes}:{seconds}"
+
 def index(request):
     if request.method != "GET":
         return JsonResponse({"error": request.method + " not allowed here"}, status=400)
@@ -54,8 +61,16 @@ def leaderboard(request, day=None):
     days = [{"i": i, "open": day_available(i)} for i in range(1,26)]
     
     if day != None and day_available(day):
-        leaderboard_two_stars = Problem.objects(day=day, part=2, correct=True).order_by("total_time")
-        leaderboard_one_star = Problem.objects(day=day, part=1, correct=True).order_by("time_taken")
+        two_stars_problems = Problem.objects(day=day, part=2, correct=True).order_by("total_time")[:10]
+        one_star_problems = Problem.objects(day=day, part=1, correct=True).order_by("time_taken")[:10]
+        leaderboard_two_stars = []
+        leaderboard_one_star = []
+        for i, problem in enumerate(two_stars_problems):
+            player = User.objects(github_id=problem.player).first()
+            leaderboard_two_stars.append({"rank": i+1, "name": player.username, "time": format_time(problem.total_time), "link": player.url})
+        for i, problem in enumerate(one_star_problems):
+            player = User.objects(github_id=problem.player).first()
+            leaderboard_one_star.append({"rank": i+1, "name": player.username, "time": format_time(problem.time_taken), "link": player.url})
         return render(request, "leaderboard_specific.jekyll", {
             "days": days, "selected_day": day,
             "leaderboard_two_stars": leaderboard_two_stars,
