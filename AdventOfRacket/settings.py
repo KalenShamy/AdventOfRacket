@@ -22,7 +22,7 @@ from mongoengine import connect
 
 connect(
     db="db",
-    host=os.getenv("MONGO_DB_URI"),
+    host=os.getenv("MONGODB_URI"),
 )
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
