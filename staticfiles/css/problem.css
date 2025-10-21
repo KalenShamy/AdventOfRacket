@@ -191,7 +191,7 @@ p {
 }
 
 .content > div:nth-child(2) {
-    width: 50%;
+    width: calc(100% - min(50%, 880px));
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -218,7 +218,7 @@ p {
 }
 
 #description {
-    width: 50%;
+    width: min(50%, 880px);
 }
 
 #description iframe {
