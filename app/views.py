@@ -224,7 +224,7 @@ def submit(request, day, part=1):
         if problem.time_taken < 0:
             return JsonResponse({"error": "Please read the problem"}, status=400)
         if part == 2:
-            part1_problem = Problem.objects(player=user.username, day=day, part=1).first()
+            part1_problem = Problem.objects(player=user_id, day=day, part=1).first()
             problem.total_time = problem.time_taken + part1_problem.time_taken
     problem.save()
     return JsonResponse({"success": passed, "tests_html": tests_html}, status=200)
