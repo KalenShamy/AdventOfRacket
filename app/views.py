@@ -144,7 +144,7 @@ def problem(request, day, part=1):
         if not previous_problem:
             # redirect to part 1 if not completed
             return HttpResponseRedirect(reverse("problem", args=[day, 1]))
-        starter_code = starter_code + "\n\n" + previous_problem.code
+        starter_code = previous_problem.code + "\n\n" + starter_code
 
 
     for i in range(len(test_cases["public"])):
