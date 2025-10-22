@@ -14,7 +14,7 @@ import traceback
 
 load_dotenv()
 
-TIME_TO_READ = 31 # seconds
+TIME_TO_READ = 30 # seconds
 
 def require_login(request):
     if not request.session.get("user_id"):
@@ -130,7 +130,7 @@ def problem(request, day, part=1):
         starter_code = started_problem.code
     elif not started_problem:
         # create a new problem entry if not started
-        new_problem = Problem(player=user_id, day=day, part=part)
+        new_problem = Problem(player=user_id, day=day, part=part, time_started=datetime.now())
         new_problem.save()
         user = User.objects(github_id=request.session.get("user_id")).first()
         if len(user.problems) < day:
@@ -262,7 +262,7 @@ def github_callback(request):
     user = User.objects(github_id=github_id).first()
 
     if not user:
-        user = User(github_id=github_id)
+        user = User(github_id=github_id, created_at=datetime.now())
         request.session["new_user"] = True
 
     user.username = user_data["name"] if user_data["name"] else user_data["login"]
