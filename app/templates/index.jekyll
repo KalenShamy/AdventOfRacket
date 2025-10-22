@@ -5,7 +5,7 @@
 {% if new_user %}
     <div id="popup-background" onclick="document.getElementById('popup-background').style.display='none';">
         <div id="popup">
-            <h1>Welcome, Kalen Shamy!</h1>
+            <h1>Welcome, {{ username }}!</h1>
             <br>
             <p>
                 Daily problems from December 1st to December 25th
