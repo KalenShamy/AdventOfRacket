@@ -76,7 +76,7 @@ STATICFILES_DIRS = [
     BASE_DIR / "app" / "static",
 ]
 
-WSGI_APPLICATION = 'AdventOfRacket.wsgi.application'
+WSGI_APPLICATION = 'AdventOfRacket.wsgi.app'
 
 
 # Database
