@@ -23,11 +23,11 @@
             <li>
                 <span class="score">{{ user.score }}</span>
                 {% if user.rank == 1 %}
-                    <a class="name first" href="{{ user.link }}" target="_blank">{{ user.username }}</a>
+                    <a class="name first" href="{{ user.link }}" target="_blank">{{ user.name }}</a>
                 {% elif user.rank <= 5 %}
-                    <a class="name topfive" href="{{ user.link }}" target="_blank">{{ user.username }}</a>
+                    <a class="name topfive" href="{{ user.link }}" target="_blank">{{ user.name }}</a>
                 {% else %}
-                    <a class="name" href="{{ user.link }}" target="_blank">{{ user.username }}</a>
+                    <a class="name" href="{{ user.link }}" target="_blank">{{ user.name }}</a>
                 {% endif %}
             </li>
         {% endfor %}
