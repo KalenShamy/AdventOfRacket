@@ -1,0 +1,8 @@
+application/__pycache__/
+application/migrations/
+AdventOfRacket/__pycache__/
+venv
+.vercel
+.env
+.DS_Store
+RacketInstalls/*
