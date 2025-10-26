@@ -69,6 +69,23 @@ def getDayLeaderboards(day):
     
     return lb_one_stars, lb_two_stars
 
+def calculateOverall():
+    playerList = {}
+    for i in range(1,26):
+        lb_one_stars, lb_two_stars = getDayLeaderboards(i)
+        for player in lb_one_stars + lb_two_stars:
+            if not player["link"] in playerList:
+                playerList[player["link"]] = {
+                    "score": 0,
+                    "name": player["name"]
+                }
+            ptsEarned = 10 - (player["rank"] - 1)
+            playerList[player["link"]]["score"] += ptsEarned
+    lb = [{"name": player["name"], "score": player["score"], "link": link} for link, player in playerList.items()]
+    lb.sort(key=lambda plr: plr["score"], reverse=True)
+    lb = [{"rank": i+1, "name": lb[i]["name"], "score": lb[i]["score"], "link": lb[i]["link"]} for i in range(min(20, len(lb)))]
+    return lb
+
 def leaderboard(request, day=None):
     if request.method != "GET":
         return JsonResponse({"error": request.method + " not allowed here"}, status=400)
@@ -87,7 +104,7 @@ def leaderboard(request, day=None):
     if day != None and not day_available(day):
         return HttpResponseRedirect(reverse("leaderboard"))
     
-    leaderboard_overall = []  # TODO: Fetch real data
+    leaderboard_overall = calculateOverall()
     return render(request, "leaderboard.jekyll", {
         "days": days, "leaderboard_overall": leaderboard_overall
     })
