@@ -38,7 +38,7 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '.vercel.app', '.adventofracket.com']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '.railway.app', '.adventofracket.com']
 
 SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
 
@@ -55,6 +55,11 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://adventofracket-preview.up.railway.app",
+    "https://adventofracket.com"
 ]
 
 ROOT_URLCONF = 'AdventOfRacket.urls'
