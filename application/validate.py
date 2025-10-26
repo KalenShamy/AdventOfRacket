@@ -46,8 +46,8 @@ def get_results(code, delimiter):
         except subprocess.TimeoutExpired:
             return False, "Code execution timed out."
 
-    output = result.stdout.split(delimiter)[1:]
-    output = [out[1:-1].strip() for out in output]
+    output = result.stdout.split(f'"{delimiter}"')[1:]
+    output = [out.strip() for out in output]
 
     return True, output
 
