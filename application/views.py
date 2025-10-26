@@ -35,8 +35,9 @@ def format_time(elapsed):
     return f"{hours}:{minutes}:{seconds}"
 
 def index(request):
-    if request.method != "GET":
+    if request.method != "GET" and request.method != "HEAD":
         return JsonResponse({"error": request.method + " not allowed here"}, status=400)
+    
     new_user = request.session.get("new_user", False)
     request.session["new_user"] = False
     username = None
@@ -87,7 +88,7 @@ def calculateOverall():
     return lb
 
 def leaderboard(request, day=None):
-    if request.method != "GET":
+    if request.method != "GET" and request.method != "HEAD":
         return JsonResponse({"error": request.method + " not allowed here"}, status=400)
     
     days = [{"i": i, "open": day_available(i)} for i in range(1,26)]
