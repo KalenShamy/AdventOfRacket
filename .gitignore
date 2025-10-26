@@ -1,6 +1,6 @@
 db.sqlite3
-app/__pycache__/
-app/migrations/
+application/__pycache__/
+application/migrations/
 AdventOfRacket/__pycache__/
 venv
 .vercel

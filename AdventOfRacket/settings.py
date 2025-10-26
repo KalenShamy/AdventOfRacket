@@ -45,7 +45,7 @@ SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
 # Application definition
 
 INSTALLED_APPS = [
-    'app',
+    'application',
     'django.contrib.staticfiles',  # Keep only static files support
 ]
 
@@ -62,7 +62,7 @@ ROOT_URLCONF = 'AdventOfRacket.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / "app" / "templates"],
+        'DIRS': [BASE_DIR / "application" / "templates"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -73,10 +73,10 @@ TEMPLATES = [
 ]
 
 STATICFILES_DIRS = [
-    BASE_DIR / "app" / "static",
+    BASE_DIR / "application" / "static",
 ]
 
-WSGI_APPLICATION = 'AdventOfRacket.wsgi.app'
+WSGI_APPLICATION = 'AdventOfRacket.wsgi.application'
 
 
 # Database
