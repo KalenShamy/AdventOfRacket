@@ -1,5 +1,12 @@
 import random
+import os
 import subprocess, tempfile
+from pathlib import Path
+import platform
+
+# Construct the absolute path to the racket executable
+BASE_DIR = Path(__file__).resolve().parent.parent
+RACKET_ROOT = BASE_DIR / "RacketInstalls" / "racket"
 
 def add_sandbox(code):
     safe_code = code.replace("\\", "\\\\").replace('"', '\\"')
