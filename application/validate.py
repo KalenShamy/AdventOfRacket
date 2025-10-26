@@ -33,11 +33,15 @@ def get_results(code, delimiter):
         temp_file.flush()
 
         try:
+            run_env = os.environ.copy()
+            run_env["PLTCOLLECTS"] = str(RACKET_ROOT / "collects")
+
             result = subprocess.run(
-                ["racket", temp_file.name],
+                [str(RACKET_ROOT / "bin" / "racket"), temp_file.name],
                 capture_output=True,
                 text=True,
-                timeout=5
+                timeout=15,
+                env=run_env
             )
         except subprocess.TimeoutExpired:
             return False, "Code execution timed out."
