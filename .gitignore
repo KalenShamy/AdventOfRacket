@@ -6,3 +6,4 @@ venv
 .vercel
 .env
 .DS_Store
+RacketInstalls/*
