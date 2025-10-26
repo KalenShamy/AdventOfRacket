@@ -2,6 +2,7 @@ db.sqlite3
 application/__pycache__/
 application/migrations/
 AdventOfRacket/__pycache__/
+staticfiles
 venv
 .vercel
 .env
