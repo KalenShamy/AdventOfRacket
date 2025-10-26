@@ -55,6 +55,20 @@ def index(request):
         "new_user": new_user,
     })
 
+def getDayLeaderboards(day):
+    two_stars_problems = Problem.objects(day=day, part=2, correct=True).order_by("total_time")[:10]
+    one_star_problems = Problem.objects(day=day, part=1, correct=True).order_by("time_taken")[:10]
+    lb_two_stars = []
+    lb_one_stars = []
+    for i, problem in enumerate(two_stars_problems):
+        player = User.objects(github_id=problem.player).first()
+        lb_two_stars.append({"rank": i+1, "name": player.username, "time": format_time(problem.total_time), "link": player.url})
+    for i, problem in enumerate(one_star_problems):
+        player = User.objects(github_id=problem.player).first()
+        lb_one_stars.append({"rank": i+1, "name": player.username, "time": format_time(problem.time_taken), "link": player.url})
+    
+    return lb_one_stars, lb_two_stars
+
 def leaderboard(request, day=None):
     if request.method != "GET":
         return JsonResponse({"error": request.method + " not allowed here"}, status=400)
@@ -62,20 +76,12 @@ def leaderboard(request, day=None):
     days = [{"i": i, "open": day_available(i)} for i in range(1,26)]
     
     if day != None and day_available(day):
-        two_stars_problems = Problem.objects(day=day, part=2, correct=True).order_by("total_time")[:10]
-        one_star_problems = Problem.objects(day=day, part=1, correct=True).order_by("time_taken")[:10]
-        leaderboard_two_stars = []
-        leaderboard_one_star = []
-        for i, problem in enumerate(two_stars_problems):
-            player = User.objects(github_id=problem.player).first()
-            leaderboard_two_stars.append({"rank": i+1, "name": player.username, "time": format_time(problem.total_time), "link": player.url})
-        for i, problem in enumerate(one_star_problems):
-            player = User.objects(github_id=problem.player).first()
-            leaderboard_one_star.append({"rank": i+1, "name": player.username, "time": format_time(problem.time_taken), "link": player.url})
+        lb_one_stars, lb_two_stars = getDayLeaderboards(day)
+        
         return render(request, "leaderboard_specific.jekyll", {
             "days": days, "selected_day": day,
-            "leaderboard_two_stars": leaderboard_two_stars,
-            "leaderboard_one_star": leaderboard_one_star
+            "leaderboard_two_stars": lb_two_stars,
+            "leaderboard_one_star": lb_one_stars
         })
     
     if day != None and not day_available(day):
