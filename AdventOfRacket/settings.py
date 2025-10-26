@@ -38,31 +38,39 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '.vercel.app', '.adventofracket.com']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '.railway.app', '.adventofracket.com']
 
 SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
 
 # Application definition
 
 INSTALLED_APPS = [
-    'app',
+    'application',
     'django.contrib.staticfiles',  # Keep only static files support
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://adventofracket-preview.up.railway.app",
+    "https://adventofracket.com"
+]
+
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
 ROOT_URLCONF = 'AdventOfRacket.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / "app" / "templates"],
+        'DIRS': [BASE_DIR / "application" / "templates"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -73,10 +81,10 @@ TEMPLATES = [
 ]
 
 STATICFILES_DIRS = [
-    BASE_DIR / "app" / "static",
+    BASE_DIR / "application" / "static",
 ]
 
-WSGI_APPLICATION = 'AdventOfRacket.wsgi.app'
+WSGI_APPLICATION = 'AdventOfRacket.wsgi.application'
 
 
 # Database

@@ -1,5 +1,12 @@
 import random
+import os
 import subprocess, tempfile
+from pathlib import Path
+import platform
+
+# Construct the absolute path to the racket executable
+BASE_DIR = Path(__file__).resolve().parent.parent
+RACKET_ROOT = BASE_DIR / "RacketInstalls" / "racket"
 
 def add_sandbox(code):
     safe_code = code.replace("\\", "\\\\").replace('"', '\\"')
@@ -26,17 +33,21 @@ def get_results(code, delimiter):
         temp_file.flush()
 
         try:
+            run_env = os.environ.copy()
+            run_env["PLTCOLLECTS"] = str(RACKET_ROOT / "collects")
+
             result = subprocess.run(
-                ["racket", temp_file.name],
+                [str(RACKET_ROOT / "bin" / "racket"), temp_file.name],
                 capture_output=True,
                 text=True,
-                timeout=5
+                timeout=15,
+                env=run_env
             )
         except subprocess.TimeoutExpired:
             return False, "Code execution timed out."
 
-    output = result.stdout.split(delimiter)[1:]
-    output = [out[1:-1].strip() for out in output]
+    output = result.stdout.split(f'"{delimiter}"')[1:]
+    output = [out.strip() for out in output]
 
     return True, output
 
