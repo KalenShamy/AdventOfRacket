@@ -92,11 +92,15 @@ def leaderboard(request, day=None):
         return JsonResponse({"error": request.method + " not allowed here"}, status=400)
     
     days = [{"i": i, "open": day_available(i)} for i in range(1,26)]
+
+    if request.session.get("user_id"):
+        username = request.session.get("username")
     
     if day != None and day_available(day):
         lb_one_stars, lb_two_stars = getDayLeaderboards(day)
         
         return render(request, "leaderboard_specific.jekyll", {
+            "username": username,
             "days": days, "selected_day": day,
             "leaderboard_two_stars": lb_two_stars,
             "leaderboard_one_star": lb_one_stars
@@ -107,7 +111,9 @@ def leaderboard(request, day=None):
     
     leaderboard_overall = calculateOverall()
     return render(request, "leaderboard.jekyll", {
-        "days": days, "leaderboard_overall": leaderboard_overall
+        "username": username,
+        "days": days,
+        "leaderboard_overall": leaderboard_overall
     })
 
 def problem(request, day, part=1):
