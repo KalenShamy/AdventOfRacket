@@ -266,6 +266,10 @@
                     window.addEventListener('beforeunload', function (e) {submitCode();});
                 }
             });
+
+            document.addEventListener("DOMContentLoaded", function() {
+                document.getElementById("descContainer").scrollTo(0, document.getElementById("descContainer").scrollTop + document.getElementById("descContainer").getElementsByTagName("h1")[1].getBoundingClientRect().y - 112);
+            });
         </script>
     </head>
     <body>
