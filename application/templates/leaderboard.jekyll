@@ -1,5 +1,4 @@
 {% extends 'layout.jekyll' %}
-{% block title %}Leaderboard{% endblock %}
 {% block css %}leaderboard{% endblock %}
 {% block meta %}
     <meta name="description" content="Check out the Advent of Racket Leaderboard. Play today!">
