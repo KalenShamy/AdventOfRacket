@@ -163,6 +163,7 @@
                 if (continueButton) {
                     continueButton.style.display = "block";
                     continueButton.style.opacity = 1;
+                    document.getElementById("descFrame").classList.add("clipBottom");
                 }
             }
 
@@ -301,7 +302,12 @@
         <div class="content">
             <div id="description" class="container">
                 <p>Description</p>
-                <iframe src="https://api.adventofracket.com/md/{{ selected_day }}/{{ selected_part }}" frameborder="0"></iframe>
+                <iframe id="descFrame"
+                    {% if selected_part == 2 %} 
+                        class="clipBottom"
+                    {% endif %}
+                    src="https://api.adventofracket.com/md/{{ selected_day }}/{{ selected_part }}" frameborder="0">
+                </iframe>
                 {% if selected_part == 1 %}
                     <a id="continue" href="./2">Continue to Part 2 &rarr;</a>
                 {% elif selected_part == 2 %}

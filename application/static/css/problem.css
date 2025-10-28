@@ -227,6 +227,10 @@ p {
     border: none;
 }
 
+#description iframe.clipBottom {
+    height: calc(100% - 50px);
+}
+
 #description #continue {
     display: none;
     opacity: 0;
@@ -242,9 +246,6 @@ p {
     position: absolute;
     bottom: 15px;
     color: var(--golden);
-    background-color: #1e1e1e;
-    box-shadow: 0 0 3px #1e1e1e;
-    border-radius: 2px;
     font-size: 20px;
 }
 
