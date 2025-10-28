@@ -1,6 +1,14 @@
 {% extends 'layout.jekyll' %}
 {% block title %}Leaderboard{% endblock %}
 {% block css %}leaderboard{% endblock %}
+{% block meta %}
+    <meta name="description" content="Check out the Advent of Racket Leaderboard. Play today!">
+    <meta property="og:url" content="https://adventofracket.com/leaderboard/">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="AdventOfRacket - {% block title %}Leaderboard{% endblock %}">
+    <meta property="og:description" content="Check out the Advent of Racket Leaderboard. Play today!">
+    <meta property="og:image" content="/static/img/logo.svg">
+{% endblock %}
 {% block content %}
 <p>
     Per Day:

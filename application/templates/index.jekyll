@@ -1,6 +1,13 @@
 {% extends 'layout.jekyll' %}
-{% block title %}Home{% endblock %}
 {% block css %}index{% endblock %}
+{% block meta %}
+    <meta name="description" content="Advent calender of Racket programming problems">
+    <meta property="og:url" content="https://adventofracket.com/">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="AdventOfRacket - {% block title %}Home{% endblock %}">
+    <meta property="og:description" content="Advent calender of Racket programming problems">
+    <meta property="og:image" content="/static/img/logo.svg">
+{% endblock %}
 {% block content %}
 {% if new_user %}
     <div id="popup-background" onclick="document.getElementById('popup-background').style.display='none';">
