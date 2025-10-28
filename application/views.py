@@ -148,7 +148,8 @@ def problem(request, day, part=1):
     # fetch starter code
     starter_code = ""
     try:
-        response = requests.get(f"https://api.adventofracket.com/starter/{day}/{part}")
+        response = requests.get(f"https://api.adventofracket.com/starter/{day}/{part}",
+                                headers={"X-Authorization": f"Bearer {os.getenv('AOR_MANAGER_ACCESS_TOKEN')}"})
         response.raise_for_status()
         starter_code = response.text
     except requests.exceptions.RequestException as e:
