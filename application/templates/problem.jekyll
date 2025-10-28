@@ -163,7 +163,7 @@
                 if (continueButton) {
                     continueButton.style.display = "block";
                     continueButton.style.opacity = 1;
-                    document.getElementById("descFrame").classList.add("clipBottom");
+                    document.getElementById("descContainer").classList.add("clipBottom");
                 }
             }
 
@@ -302,12 +302,14 @@
         <div class="content">
             <div id="description" class="container">
                 <p>Description</p>
-                <iframe id="descFrame"
+                <div id="descContainer"
                     {% if selected_part == 2 %} 
                         class="clipBottom"
-                    {% endif %}
-                    src="https://api.adventofracket.com/md/{{ selected_day }}/{{ selected_part }}" frameborder="0">
-                </iframe>
+                    {% endif %}>
+                    <div id="descContent">
+                        {{ description|safe }}
+                    </div>
+                </div>
                 {% if selected_part == 1 %}
                     <a id="continue" href="./2">Continue to Part 2 &rarr;</a>
                 {% elif selected_part == 2 %}

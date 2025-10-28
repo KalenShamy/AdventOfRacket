@@ -156,6 +156,18 @@ def problem(request, day, part=1):
         traceback.print_exc()
         print(f"Error fetching starter code: {e}")
         return HttpResponse("Fetch Error 2", status=500)
+    
+    # fetch problem description
+    description = ""
+    try:
+        response = requests.get(f"http://api.adventofracket.com/md/{day}/{part}",
+                                headers={"X-Authorization": f"Bearer {os.getenv('AOR_MANAGER_ACCESS_TOKEN')}"})
+        response.raise_for_status()
+        description = response.text
+    except requests.exceptions.RequestException as e:
+        traceback.print_exc()
+        print(f"Error fetching problem description: {e}")
+        return HttpResponse("Fetch Error 4", status=500)
 
     if started_problem and started_problem.code:
         starter_code = started_problem.code
@@ -195,6 +207,7 @@ def problem(request, day, part=1):
         "is_completed": is_completed,
         "time_taken": started_problem.time_taken if is_completed else False,
         "time_started": started_problem.time_started.timestamp() + TIME_TO_READ,
+        "description": description,
 
         "tests": render(request, "tests.jekyll", {
             "test_cases": test_cases["public"],
