@@ -317,6 +317,10 @@ p {
     height: 40%;
 }
 
+#priority-message {
+    white-space: pre-wrap;
+}
+
 #test-results {
     font-family: 'Open Sans', sans-serif;
     position: absolute;

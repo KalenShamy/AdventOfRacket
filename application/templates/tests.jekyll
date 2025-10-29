@@ -1,7 +1,5 @@
 {% if tests_message %}
-    <div id="priority-message">
-        {{ tests_message }}
-    </div>
+    <p id="priority-message">{{ tests_message }}</p>
 {% endif %}
 {% for test in test_cases %}
     <div class="test-case">

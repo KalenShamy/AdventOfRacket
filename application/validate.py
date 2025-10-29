@@ -49,7 +49,10 @@ def get_results(code, delimiter):
     output = result.stdout.split(f'"{delimiter}"')[1:]
     output = [out.strip() for out in output]
 
-    return True, output
+    if result.stderr == "":
+        return True, output
+    else:
+        return False, "Your code crashed during execution\n" + result.stderr.encode("utf-8").splitlines()[0].decode("utf-8")
 
 def verify_tests(tests, output):
     results = []
@@ -59,7 +62,8 @@ def verify_tests(tests, output):
     hidden_total = len(tests["hidden"])
 
     if len(output) < public_total + hidden_total:
-        return False, {"message": "Your code crashed during execution"}
+        print(output)
+        return False, {"message": "Your code crashed during execution\nUnknown Error"}
 
     for i, test in enumerate(tests["public"]):
         expected = test[1]
