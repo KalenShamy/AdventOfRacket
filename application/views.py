@@ -93,6 +93,7 @@ def leaderboard(request, day=None):
     
     days = [{"i": i, "open": day_available(i)} for i in range(1,26)]
 
+    username = None
     if request.session.get("user_id"):
         username = request.session.get("username")
     
