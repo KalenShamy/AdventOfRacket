@@ -1,10 +1,11 @@
 {% extends 'layout.jekyll' %}
 {% block css %}index{% endblock %}
+{% block title %}<title>Advent of Racket</title>{% endblock %}
 {% block meta %}
     <meta name="description" content="Advent calender of Racket programming problems">
     <meta property="og:url" content="https://adventofracket.com/">
     <meta property="og:type" content="website">
-    <meta property="og:title" content="AdventOfRacket - {% block title %}Home{% endblock %}">
+    <meta property="og:title" content="Advent of Racket">
     <meta property="og:description" content="Advent calender of Racket programming problems">
     <meta property="og:image" content="/static/img/logo.svg">
 {% endblock %}

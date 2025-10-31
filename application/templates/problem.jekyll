@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>AdventOfRacket - Day {{ selected_day }} p{{ selected_part }}</title>
+        <title>Advent of Racket | Day {{ selected_day }} p{{ selected_part }}</title>
         <link rel="stylesheet" href="/static/css/problem.css">
         <script src="https://kit.fontawesome.com/69df78250d.js" crossorigin="anonymous"></script>
         <link rel="icon" type="image/x-icon" href="/static/img/favicon.ico">
