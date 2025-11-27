@@ -178,9 +178,8 @@ def problem(request, day, part=1):
         new_problem.save()
         user = User.objects(github_id=request.session.get("user_id")).first()
         if len(user.problems) < day:
-            user.problems.append([new_problem])
-        else:
-            user.problems[day-1].append(new_problem)
+            user.problems.extend([[]] * (day - len(user.problems)))
+        user.problems[day-1].append(new_problem)
         user.save()
         started_problem = new_problem
     if part != 1:
