@@ -187,7 +187,7 @@ def problem(request, day, part=1):
         if not previous_problem:
             # redirect to part 1 if not completed
             return HttpResponseRedirect(reverse("problem", args=[day, 1]))
-        starter_code = previous_problem.code + "\n\n" + starter_code
+        starter_code = previous_problem.code + "\n\n; --- PART 2 --- \n\n" + starter_code
 
 
     for i in range(len(test_cases["public"])):
@@ -246,7 +246,7 @@ def submit(request, day, part=1):
         return HttpResponse("Fetch Error 3", status=500)
     
     passed, tests_status = validate_code(code, test_cases)
-    problem.code = code
+    problem.code = code if "\n\n; --- PART 2 --- \n\n" not in code else code.split("\n\n; --- PART 2 --- \n\n")[1]
     problem.tests = tests_status.get("results", [])
     problem.tests_message = tests_status.get("message", "Unknown error")
 
