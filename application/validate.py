@@ -89,6 +89,10 @@ def verify_tests(tests, output):
 def validate_code(code, tests):
     delimiter = f"*{random.random()}*"
 
+    context = tests["context"] if "context" in tests else []
+    for c in context:
+        code += "\n" + c
+
     code = add_sandbox(code)
     code = add_tests(code, tests, delimiter)
 
