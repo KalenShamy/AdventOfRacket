@@ -200,6 +200,8 @@
                 .then(data => {
                     if (data.error) {
                         alert(data.error);
+                        document.getElementById('run-button').classList.remove('loading');
+                        document.getElementById('run-button').disabled = false;
                         return;
                     }
                     const testsDiv = document.getElementById('test-results');
@@ -217,6 +219,11 @@
                         document.getElementById('run-button').disabled = false;
                     }
                     document.getElementById('run-button').classList.remove('loading');
+                })
+                .catch(error => {
+                    console.error('Error submitting code:', error);
+                    document.getElementById('run-button').classList.remove('loading');
+                    document.getElementById('run-button').disabled = false;
                 });
             }
 
@@ -257,7 +264,9 @@
             function onCompleted() {
                 showContinueButton();
                 
-                setClock({{ time_taken }});
+                {% if time_taken %}
+                    setClock({{ time_taken }});
+                {% endif %}
                 
                 setInterval(()=>{
                     if (document.activeElement.ariaRoleDescription == "editor") {
