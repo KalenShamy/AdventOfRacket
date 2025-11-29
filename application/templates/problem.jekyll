@@ -49,52 +49,56 @@
                         'struct', 'vector', 'hash', 'list', 'set!', 'set-car!', 'set-cdr!', 'car', 'cdr', 'cons', 'append', 'map', 'for-each',
                         
                         // Misc / special forms
-                        'quote', 'quasiquote', 'unquote', 'unquote-splicing', 'begin0', 'delay', 'force'
+                        'quote', 'quasiquote', 'unquote', 'unquote-splicing', 'begin0', 'delay', 'force',
                     ],
                     // Symbols that commonly appear as booleans/special
                     constants: ['t','nil','#t','#f','#false','#true','false','true'],
 
                     tokenizer: {
                         root: [
-                            // Block comments #| ... |#
                             [/#\|/, { token: 'comment', next: '@blockComment' }],
-
-                            // Line comments ; ... end
                             [/;+.*/, 'comment'],
-
-                            // Strings with escapes
                             [/"/, { token: 'string.quote', next: '@string' }],
-
-                            // Numbers (ints, floats, radix forms like #x, #b, #o)
                             [/(#x[0-9a-fA-F]+|#b[01]+|#o[0-7]+|\d+\.\d+|\d+)/, 'number'],
 
-                            // Quoting forms: ', `, , ,@ treated as operators
-                            [/['`,]/, 'operator'],
+                            [/#:[a-zA-Z_\-][a-zA-Z0-9_\-]*/, 'keyword.structOption'],
+                            
+                            [/\(/, { token: '@brackets', next: '@afterParen' }],
+                            [/[\[\]]/, '@brackets'],
+                            [/\)/, '@brackets'],
+                            
                             [/,@/, 'operator'],
-
-                            // Keywords and identifiers
-                            [
-                                /[a-zA-Z_+\-*\/<>=!?$%&~^:.][a-zA-Z0-9_+\-*\/<>=!?$%&~^:.]*/,
-                                {
+                            [/['`,]/, 'operator'],
+                            [/[a-zA-Z_+\-*\/<>=!?$%&~^:.][a-zA-Z0-9_+\-*\/<>=!?$%&~^:]*/, {
                                     cases: {
                                         '@keywords': 'keyword',
                                         '@constants': 'constant',
                                         '@default': 'identifier',
                                     },
-                                },
-                            ],
-
-                            
-                            [/[,:]/, 'delimiter']
+                            }],
+                            [/:/, 'delimiter']
+                        ],
+                        
+                        // State after opening parenthesis
+                        afterParen: [
+                            [/\s+/, 'white'],  // Skip whitespace
+                            [/[a-zA-Z_+\-*\/<>=!?$%&~^:.][a-zA-Z0-9_+\-*\/<>=!?$%&~^:]*/, {
+                                cases: {
+                                    '@keywords': { token: 'keyword', next: '@pop' },
+                                    '@default': { token: 'function', next: '@pop' }
+                                }
+                            }],
+                            // If we hit another paren or bracket, pop back
+                            [/[()\[\]]/, { token: '@brackets', next: '@pop' }],
+                            // Fallback to root for anything else
+                            ['', '', '@pop']
                         ],
 
-                        // Multiline block comments
                         blockComment: [
                             [/\|#/, { token: 'comment', next: '@pop' }],
                             [/./, 'comment']
                         ],
 
-                        // Strings with escapes until closing quote
                         string: [
                             [/\\./, 'string.escape'],
                             [/"/, { token: 'string.quote', next: '@pop' }],
@@ -131,7 +135,9 @@
                         { token: 'string', foreground: 'CE9178' },
                         { token: 'number', foreground: 'B5CEA8' },
                         { token: 'keyword', foreground: 'C586C0' },
+                        { token: 'keyword.structOption', foreground: 'D06060' },
                         { token: 'constant', foreground: '4FC1FF' },
+                        { token: 'function', foreground: 'DCDCAA' },
                         { token: 'identifier', foreground: 'D4D4D4' },
                         { token: 'operator', foreground: 'D4D4D4' },
                         { token: 'delimiter.parenthesis', foreground: 'D4D4D4' },
