@@ -350,10 +350,7 @@ p {
     height: 100%;
     position: absolute;
     z-index: 5;
-}
-
-#code #read-only:active {
-    background: #1e1e1eaa;
+    pointer-events: none;
 }
 
 #code #read-only p {

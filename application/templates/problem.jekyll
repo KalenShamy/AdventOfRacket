@@ -60,7 +60,7 @@
                             [/;+.*/, 'comment'],
                             [/"/, { token: 'string.quote', next: '@string' }],
                             [/(#x[0-9a-fA-F]+|#b[01]+|#o[0-7]+|\d+\.\d+|\d+)/, 'number'],
-
+                            
                             [/#:[a-zA-Z_\-][a-zA-Z0-9_\-]*/, 'keyword.structOption'],
                             
                             [/\(/, { token: '@brackets', next: '@afterParen' }],
@@ -70,15 +70,15 @@
                             [/,@/, 'operator'],
                             [/['`,]/, 'operator'],
                             [/[a-zA-Z_+\-*\/<>=!?$%&~^:.][a-zA-Z0-9_+\-*\/<>=!?$%&~^:]*/, {
-                                    cases: {
-                                        '@keywords': 'keyword',
-                                        '@constants': 'constant',
-                                        '@default': 'identifier',
-                                    },
+                                cases: {
+                                    '@keywords': 'keyword',
+                                    '@constants': 'constant',
+                                    '@default': 'identifier',
+                                },
                             }],
                             [/:/, 'delimiter']
                         ],
-                        
+
                         // State after opening parenthesis
                         afterParen: [
                             [/\s+/, 'white'],  // Skip whitespace
@@ -210,8 +210,9 @@
                         document.getElementById('controls').classList.remove('submittable');
                         document.getElementById('controls').classList.add('completed');
                         document.getElementById('read-only').style.display = 'block';
-
-                        showContinueButton()
+                        
+                        onCompleted();
+                        showContinueButton();
                     } else {
                         document.getElementById('run-button').disabled = false;
                     }
@@ -238,33 +239,43 @@
                 if (isReading) {
                     if (document.activeElement.classList.contains("monaco-mouse-cursor-text")) {
                         document.activeElement.blur();
+                        document.getElementById('read-only').style.background = "#1e1e1eaa";
+                        setTimeout(()=>{document.getElementById('read-only').style.background = ""}, 250);
                     }
                 } else {
                     document.getElementById('controls').classList.remove('countdown');
                     document.getElementById('controls').classList.add('submittable');
                     document.getElementById('read-only').style.display = 'none';
+                    document.querySelector(".monaco-scrollable-element.editor-scrollable.vs-dark.mac").style.pointerEvents = "";
                 }
 
                 if (!COMPLETED) {
                     setClock(elapsed);
                 }
             }
+            
+            function onCompleted() {
+                showContinueButton();
+                
+                setClock({{ time_taken }});
+                
+                setInterval(()=>{
+                    if (document.activeElement.ariaRoleDescription == "editor") {
+                        document.activeElement.blur();
+                        document.getElementById('read-only').style.background = "#1e1e1eaa";
+                        setTimeout(()=>{document.getElementById('read-only').style.background = ""}, 250);
+                    }
+                }, 50);
+
+                document.getElementById('controls').classList.remove('submittable');
+                document.getElementById('controls').classList.add('completed');
+                document.getElementById('read-only').style.display = 'block';
+                document.querySelector(".monaco-scrollable-element.editor-scrollable.vs-dark.mac").style.pointerEvents = "none";
+            }
 
             document.addEventListener('DOMContentLoaded', function() {
                 if (COMPLETED) {
-                    showContinueButton();
-                    
-                    setClock({{ time_taken }});
-                    
-                    setInterval(()=>{
-                        if (document.activeElement.ariaRoleDescription == "editor") {
-                            document.activeElement.blur();
-                        }
-                    }, 50);
-
-                        document.getElementById('controls').classList.remove('submittable');
-                        document.getElementById('controls').classList.add('completed');
-                        document.getElementById('read-only').style.display = 'block';
+                    onCompleted();
                 } else {
                     setInterval(updateTimeElapsed, 200);
                     
@@ -275,6 +286,7 @@
 
             document.addEventListener("DOMContentLoaded", function() {
                 document.getElementById("descContainer").scrollTo(0, document.getElementById("descContainer").scrollTop + document.getElementById("descContainer").getElementsByTagName("h1")[1].getBoundingClientRect().y - 112);
+                
             });
         </script>
     </head>
