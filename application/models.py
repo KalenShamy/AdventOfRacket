@@ -11,6 +11,7 @@ class User(Document):
     avatar_url = StringField()
     access_token = StringField()
     problems = ListField(ListField(ReferenceField('Problem')))
+    submission_history = ListField(DateTimeField())  # list of submission timestamps for hourly rate limiting
 
     def __str__(self):
         return f"{self.name}"
@@ -26,6 +27,7 @@ class Problem(Document):
     total_time = IntField()  # in seconds, cumulative time including previous parts
     tests = ListField(StringField())  # list of [user_output] (index aligns with test cases)
     tests_message = StringField()  # message about the tests, e.g. "All tests passed" or "3/5 tests passed"
+    last_submission_time = DateTimeField()  # timestamp of the last submission attempt
 
     def __str__(self):
         return f"Submission by {self.player} for {self.day}.{self.part} taking {self.time_taken} seconds"

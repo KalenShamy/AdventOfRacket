@@ -15,6 +15,8 @@ import traceback
 load_dotenv()
 
 TIME_TO_READ = 30 # seconds
+SUBMISSION_COOLDOWN = 15 # seconds between submissions
+HOURLY_RATE_LIMIT = 50 # max submissions per hour
 
 def require_login(request):
     if not request.session.get("user_id"):
@@ -224,12 +226,42 @@ def submit(request, day, part=1):
         return redirect_url
     
     user_id = request.session.get("user_id")
+    user = User.objects(github_id=user_id).first()
 
     problem = Problem.objects(player=user_id, day=day, part=part).first()
     if not problem:
         return JsonResponse({"error": "Problem not started yet"}, status=400)
     if problem.correct:
         return JsonResponse({"error": "Problem already completed"}, status=400)
+
+    # per-problem cooldown check
+    if problem.last_submission_time:
+        time_since_last_submission = (datetime.now() - problem.last_submission_time).total_seconds()
+        if time_since_last_submission < SUBMISSION_COOLDOWN:
+            remaining_time = int(SUBMISSION_COOLDOWN - time_since_last_submission)
+            return JsonResponse({"error": f"Please wait {remaining_time} seconds before submitting again"}, status=429)
+
+    # hourly rate limit check
+    current_time = datetime.now()
+    one_hour_ago = current_time.timestamp() - 3600
+
+    if user.submission_history:
+        recent_submissions = [ts for ts in user.submission_history if ts.timestamp() > one_hour_ago]
+        user.submission_history = recent_submissions
+
+        if len(recent_submissions) >= HOURLY_RATE_LIMIT:
+            # find the oldest submission in the window
+            oldest_submission = min(recent_submissions, key=lambda ts: ts.timestamp())
+            time_until_available = int(3600 - (current_time.timestamp() - oldest_submission.timestamp()))
+            minutes = time_until_available // 60
+            seconds = time_until_available % 60
+            return JsonResponse({"error": f"Hourly submission limit reached. Try again in {minutes:02d}m {seconds:02d}s"}, status=429)
+
+    # add submission to history
+    problem.last_submission_time = current_time
+    if not user.submission_history:
+        user.submission_history = []
+    user.submission_history.append(current_time)
 
     code = json.loads(request.body).get("code", "")
     
@@ -270,6 +302,7 @@ def submit(request, day, part=1):
         if part == 2:
             part1_problem = Problem.objects(player=user_id, day=day, part=1).first()
             problem.total_time = problem.time_taken + part1_problem.time_taken
+    user.save()
     problem.save()
     return JsonResponse({"success": passed, "tests_html": tests_html}, status=200)
     
