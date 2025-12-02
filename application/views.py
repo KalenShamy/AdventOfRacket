@@ -7,7 +7,7 @@ from django.core.paginator import Paginator
 from .models import User, Problem
 from .validate import validate_code
 import requests
-from datetime import date, datetime
+from datetime import date, datetime, timedelta, timezone
 import os
 from dotenv import load_dotenv
 import traceback
@@ -24,7 +24,9 @@ def require_login(request):
     return True, None
 
 def day_available(day):
-    current_date = date.today()
+    # EST is UTC-5
+    est = timezone(timedelta(hours=-5))
+    current_date = datetime.now(est).date()
     if current_date.month != 12:
         current_date = date(2025, 12, 1)
     return day <= current_date.day
