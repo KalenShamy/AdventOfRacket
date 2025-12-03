@@ -253,7 +253,7 @@
                     document.getElementById('controls').classList.remove('countdown');
                     document.getElementById('controls').classList.add('submittable');
                     document.getElementById('read-only').style.display = 'none';
-                    document.querySelector(".monaco-scrollable-element.editor-scrollable.vs-dark.mac").style.pointerEvents = "";
+                    document.querySelector(".monaco-scrollable-element.editor-scrollable.vs-dark").style.pointerEvents = "";
                 }
 
                 if (!COMPLETED) {
@@ -279,7 +279,7 @@
                 document.getElementById('controls').classList.remove('submittable');
                 document.getElementById('controls').classList.add('completed');
                 document.getElementById('read-only').style.display = 'block';
-                document.querySelector(".monaco-scrollable-element.editor-scrollable.vs-dark.mac").style.pointerEvents = "none";
+                document.querySelector(".monaco-scrollable-element.editor-scrollable.vs-dark").style.pointerEvents = "none";
             }
 
             document.addEventListener('DOMContentLoaded', function() {
