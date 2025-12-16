@@ -29,7 +29,7 @@ def day_available(day):
     current_date = datetime.now(est).date()
     if current_date.month != 12:
         current_date = date(2025, 12, 1)
-    return day <= current_date.day
+    return day <= min(current_date.day, 5) # stop after day 5
 
 def format_time(elapsed):
     hours = f"{elapsed // 3600:02}"
