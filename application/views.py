@@ -17,6 +17,7 @@ load_dotenv()
 TIME_TO_READ = 30 # seconds
 SUBMISSION_COOLDOWN = 15 # seconds between submissions
 HOURLY_RATE_LIMIT = 50 # max submissions per hour
+API_URL = "https://api.adventofracket.com" # "http://127.0.0.1:5000"
 
 def require_login(request):
     if not request.session.get("user_id"):
@@ -143,7 +144,7 @@ def problem(request, day, part=1):
     # fetch test cases
     test_cases = ""
     try:
-        response = requests.get(f"https://api.adventofracket.com/tests/{day}/{part}",
+        response = requests.get(f"{API_URL}/tests/{day}/{part}",
                                 headers={"X-Authorization": f"Bearer {os.getenv('AOR_MANAGER_ACCESS_TOKEN')}"})
         response.raise_for_status()
         test_cases = json.loads(response.text)
@@ -155,7 +156,7 @@ def problem(request, day, part=1):
     # fetch starter code
     starter_code = ""
     try:
-        response = requests.get(f"https://api.adventofracket.com/starter/{day}/{part}",
+        response = requests.get(f"{API_URL}/starter/{day}/{part}",
                                 headers={"X-Authorization": f"Bearer {os.getenv('AOR_MANAGER_ACCESS_TOKEN')}"})
         response.raise_for_status()
         starter_code = response.text
@@ -167,7 +168,7 @@ def problem(request, day, part=1):
     # fetch problem description
     description = ""
     try:
-        response = requests.get(f"http://api.adventofracket.com/md/{day}/{part}",
+        response = requests.get(f"{API_URL}/md/{day}/{part}",
                                 headers={"X-Authorization": f"Bearer {os.getenv('AOR_MANAGER_ACCESS_TOKEN')}"})
         response.raise_for_status()
         description = response.text
@@ -272,7 +273,7 @@ def submit(request, day, part=1):
     # fetch test cases
     test_cases = {"public": [], "private": []}
     try:
-        response = requests.get(f"https://api.adventofracket.com/tests/{day}/{part}",
+        response = requests.get(f"{API_URL}/tests/{day}/{part}",
                                 headers={"X-Authorization": f"Bearer {os.getenv('AOR_MANAGER_ACCESS_TOKEN')}"})
         response.raise_for_status()
         test_cases = json.loads(response.text)
