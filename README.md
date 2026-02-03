@@ -63,7 +63,9 @@ curl -L https://mirror.racket-lang.org/installers/8.13/racket-8.13-x86_64-win32-
 ```
 
 #### Other
-Find the install right for your computer at https://mirror.racket-lang.org/installers/8.13/. Then move the contents to `./RacketInstalls/racket` such that `./RacketInstalls/racket/bin` and `./RacketInstalls/racket/collects` are accessible from the project root. Then, run:
+1. Find the install right for your computer at https://mirror.racket-lang.org/installers/8.13/.
+2. Move the contents to `./RacketInstalls/racket` such that `./RacketInstalls/racket/bin` and `./RacketInstalls/racket/collects` are accessible from the project root. 
+3. Then, run:
 ```bash
 python manage.py collectstatic --noinput
 ```
