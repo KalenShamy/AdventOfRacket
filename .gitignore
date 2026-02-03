@@ -8,3 +8,6 @@ venv
 .env
 .DS_Store
 RacketInstalls/*
+racket.sh
+racket.dmg
+racket.exe
