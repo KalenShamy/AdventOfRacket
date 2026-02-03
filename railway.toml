@@ -1,0 +1,16 @@
+[build]
+builder = "RAILPACK"
+buildCommand = "curl -L https://mirror.racket-lang.org/installers/8.13/racket-8.13-x86_64-linux.sh -o racket.sh ; bash racket.sh --in-place --dest RacketInstalls/racket --create-dir ; python manage.py collectstatic --noinput"
+buildEnvironment = "V3"
+
+[deploy]
+runtime = "V2"
+numReplicas = 1
+startCommand = "gunicorn AdventOfRacket.wsgi:application --bind 0.0.0.0:$PORT"
+overlapSeconds = 30
+drainingSeconds = 3
+sleepApplication = true
+useLegacyStacker = false
+multiRegionConfig = {"us-east4-eqdc4a":{"numReplicas":1}}
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 10
