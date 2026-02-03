@@ -27,6 +27,8 @@ def day_available(day):
     # EST is UTC-5
     est = timezone(timedelta(hours=-5))
     current_date = datetime.now(est).date()
+    if current_date.year > 2025:
+        return day <= 5
     if current_date.month != 12:
         current_date = date(2025, 12, 1)
     return day <= min(current_date.day, 5) # stop after day 5
