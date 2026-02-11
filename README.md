@@ -17,39 +17,14 @@ Advent of Racket is built with **Django** and **MongoDB**, with a separate **[Pr
 
 ### Architecture
 
-<ul>
-  <li style="list-style:none; position: relative;">
-    <img src="https://cdn.simpleicons.org/django/000/fff" alt="Django" width=19 height=19 style="position: absolute; left: -27px; top:3px">
-    <b>Frontend</b> — Django templates with the <a href="https://microsoft.github.io/monaco-editor/">Monaco Editor</a> (the engine behind VS Code) with custom Racket syntax highlighting providing an in-browser programming interface.
-  </li>
+- **Frontend** — Django templates with the [Monaco Editor](https://microsoft.github.io/monaco-editor/) (the engine behind VS Code) with custom Racket syntax highlighting providing an in-browser programming interface.
+- **Backend** — Django views handle authentication, leaderboard logic, problem loading from the API, submission processing, and test case validation.
+- **Code Execution** — A bundled [Racket](https://racket-lang.org/) runtime executes user submissions in a [sandboxed](https://docs.racket-lang.org/reference/Sandboxed_Evaluation.html) environment, blocking filesystem and network access with a 15-second timeout.
+- **Database** — MongoDB Atlas stores user accounts, problem sessions, submission history, and leaderboard data via [MongoEngine](https://mongoengine.org/).
+- **Problem Manager API** — A separate API serving test cases, starter code, and Markdown problem descriptions exclusively to requests using a valid authentication token — designed only to be accessed by this program's backend.
+- **Hosting** — Deployed on [Railway](https://railway.app/) with Gunicorn as the WSGI server and WhiteNoise for static file serving.
 
-  <li style="list-style:none; position: relative;">
-    <img src="https://cdn.simpleicons.org/django/000/fff" alt="Django" width=19 height=19 style="position: absolute; left: -27px; top:3px">
-    <b>Backend</b> — Django views handle authentication, leaderboard logic, problem loading from the API, submission processing, and test case validation.
-  </li>
-
-  <li style="list-style:none; position: relative;">
-    <img src="https://cdn.simpleicons.org/racket/000/fff" alt="Racket" width=19 height=19 style="position: absolute; left: -27px; top:3px">
-    <b>Code Execution</b> — A bundled <a href="https://racket-lang.org/">Racket</a> runtime running on backend executes user submissions in a <a href="https://docs.racket-lang.org/reference/Sandboxed_Evaluation.html">sandboxed</a> environment, blocking filesystem and network access with a 15-second timeout.
-  </li>
-
-  <li style="list-style:none; position: relative;">
-    <img src="https://cdn.simpleicons.org/mongodb/000/fff" alt="MongoDB" width=19 height=19 style="position: absolute; left: -27px; top:3px">
-    <b>Database</b> — MongoDB Atlas stores user accounts, problem sessions, submission history, and leaderboard data via <a href="https://mongoengine.org/">MongoEngine</a>.
-  </li>
-
-  <li style="list-style:none; position: relative;">
-    <img src="https://cdn.simpleicons.org/flask/000/fff" alt="Flask" width=19 height=19 style="position: absolute; left: -27px; top:3px">
-    <b>Problem Manager API</b> — A separate API serving test cases, starter code, and Markdown problem descriptions exclusively to requests using a valid authentication token - designed only to be accessed by this program's backend.
-  </li>
-
-  <li style="list-style:none; position: relative;">
-    <img src="https://cdn.simpleicons.org/railway/000/fff" alt="Railway" width=19 height=19 style="position: absolute; left: -27px; top:2px">
-    <b>Hosting</b> — Deployed on <a href="https://railway.app/">Railway</a> with Gunicorn as the WSGI server and WhiteNoise for static file serving.
-  </li>
-</ul>
-
-### Usage Flow
+### Usage
 
 1. **Login** — Players log in with their GitHub account and are redirected back to the site.
 2. **Select a Problem** — Users choose one of the available days on the advent calendar, opening a page displaying the problem description, starter code, and test cases fetched from the Problem Manager API.
@@ -117,7 +92,7 @@ pip install -r requirements.txt
 
 ### 2. Install Racket
 
-Choose your platform below, or see [Manual Installation](#manual-installation) for other systems.
+Choose your platform below, or see the Manual Installation dropdown for other systems.
 
 <details>
 <summary><strong>macOS (Apple Silicon)</strong></summary>
